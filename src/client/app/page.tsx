@@ -11,6 +11,9 @@ const openGraph: Metadata['openGraph'] = {
   description:
     'An application that helps with automating Discord message updates',
   images: '/social.png',
+  type: 'website',
+  siteName: SITE_TITLE,
+  url: '/',
 };
 
 export const metadata: Metadata = {
