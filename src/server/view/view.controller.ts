@@ -17,8 +17,13 @@ export class ViewController {
     await this.viewService.handler(req, res);
   }
 
-  @Get('*/*')
+  @Get('*')
   public async public(@Req() req: Request, @Res() res: Response) {
+    await this.viewService.handler(req, res);
+  }
+
+  @Get('*/*')
+  public async publicSubDir(@Req() req: Request, @Res() res: Response) {
     await this.viewService.handler(req, res);
   }
 }
