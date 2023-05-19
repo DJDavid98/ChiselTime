@@ -25,7 +25,7 @@ export async function bootstrap() {
       cookie: {
         path: '/',
         httpOnly: true,
-        secure: !serverEnv.LOCAL,
+        secure: serverEnv.SESSION_COOKIE_SECURE,
         sameSite: true,
       },
       store: await retrieveSessionStore(logger),

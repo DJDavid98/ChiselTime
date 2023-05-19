@@ -4,6 +4,10 @@ import { join } from 'path';
 
 config({ path: join(process.cwd(), '.env') });
 
+const bool = (envVar: string | undefined): boolean => envVar === 'true';
+const int = (envVar: string | undefined): number | undefined =>
+  envVar ? parseInt(envVar) : undefined;
+
 const {
   PORT,
   LOCAL,
@@ -20,6 +24,7 @@ const {
   PUBLIC_HOST,
   UA_STRING,
   SESSION_SECRET_KEY_PATH,
+  SESSION_COOKIE_SECURE,
   DISCORD_CLIENT_ID,
   DISCORD_CLIENT_SECRET,
   DISCORD_CLIENT_SCOPES,
@@ -40,22 +45,23 @@ export const serverEnv = (() => {
     LOCAL: LOCAL === 'true',
     LOG_LEVEL,
     DATABASE_HOST,
-    DATABASE_PORT: DATABASE_PORT ? parseInt(DATABASE_PORT) : undefined,
+    DATABASE_PORT: int(DATABASE_PORT),
     DATABASE_USER,
     DATABASE_PASS,
     DATABASE_NAME,
     REDIS_HOST,
-    REDIS_PORT: REDIS_PORT ? parseInt(REDIS_PORT) : undefined,
+    REDIS_PORT: int(REDIS_PORT),
     REDIS_USER,
     REDIS_PASS,
     PUBLIC_HOST,
     UA_STRING,
     SESSION_SECRET_KEY_PATH,
+    SESSION_COOKIE_SECURE: bool(SESSION_COOKIE_SECURE),
     DISCORD_CLIENT_ID,
     DISCORD_CLIENT_SECRET,
     DISCORD_CLIENT_SCOPES,
     DISCORD_BOT_TOKEN,
-    DISCORD_BOT_ENABLED: DISCORD_BOT_ENABLED === 'true',
+    DISCORD_BOT_ENABLED: bool(DISCORD_BOT_ENABLED),
     DISCORD_INVITE_URL,
     DISCORD_TEST_GUILD_ID: DISCORD_TEST_GUILD_ID || '',
     PATREON_CLIENT_ID,
