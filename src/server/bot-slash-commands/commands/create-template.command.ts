@@ -60,10 +60,14 @@ export class CreateTemplateCommand {
     });
     if (existingTemplate) {
       await interaction.reply({
-        content:
-          'Template already exists with ID ' +
-          existingTemplate.id +
-          '\nMessage link: https://discord.com/channels/216882920919400450/877472256249446420/1106399959244345404',
+        content: [
+          `Template already exists with ID ${existingTemplate.id}`,
+          `Message link: https://discord.com/channels/${[
+            existingTemplate.serverId,
+            existingTemplate.channelId,
+            existingTemplate.messageId,
+          ].join('/')}`,
+        ].join('\n'),
         ephemeral: true,
       });
       return;
