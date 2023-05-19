@@ -13,8 +13,17 @@ interface TierData {
 }
 
 export const UserInfo: FC = () => {
-  const result = useSWR('/users/me', (key) =>
-    fetch(key).then<UserInfoDto>((r) => (r.ok ? r.json() : Promise.reject(r))),
+  const result = useSWR(
+    '/users/me',
+    (key) =>
+      fetch(key).then<UserInfoDto>((r) =>
+        r.ok ? r.json() : Promise.reject(r),
+      ),
+    {
+      refreshInterval: 10e3,
+      refreshWhenHidden: false,
+      errorRetryCount: 3,
+    },
   );
 
   const tierData: TierData = useMemo(() => {
