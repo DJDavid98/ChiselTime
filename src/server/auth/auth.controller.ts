@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Logger,
   Post,
   Redirect,
   Req,
@@ -14,6 +15,8 @@ import { SessionUserGuard } from './guards/session-user.guard';
 
 @Controller('auth')
 export class AuthController {
+  logger = new Logger(AuthController.name);
+
   @Get('login/discord')
   @UseGuards(AuthGuard('discord'))
   @Redirect('/', HttpStatus.TEMPORARY_REDIRECT)
@@ -32,7 +35,13 @@ export class AuthController {
   @UseGuards(AuthGuard('discord'))
   async getUserFromDiscordLogin(@Req() req: Request, @Res() res: Response) {
     if (req.user) {
+      this.logger.debug('Saving userId to session', req.user);
       req.session.userId = req.user.id;
+    } else {
+      this.logger.debug(
+        'Authentication failed, not saving userId to session',
+        req.user,
+      );
     }
 
     res.status(HttpStatus.TEMPORARY_REDIRECT).redirect('/');
@@ -49,6 +58,7 @@ export class AuthController {
   // TODO CSRF protection
   @UseGuards(SessionUserGuard)
   async logout(@Req() req: Request, @Res() res: Response) {
+    this.logger.debug('Deleting userId from session');
     delete req.session.userId;
 
     res.status(HttpStatus.TEMPORARY_REDIRECT).redirect('/');
