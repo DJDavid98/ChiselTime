@@ -1,10 +1,6 @@
-import { getPasswordSchema } from './create-user.dto';
-import Joi from 'joi';
+import { PartialType } from '@nestjs/swagger';
+import { CreateUserDto, createUserSchema } from './create-user.dto';
 
-export const updateUserSchema = Joi.object({
-  password: getPasswordSchema(),
-});
+export const updateUserSchema = createUserSchema;
 
-export class UpdateUserDto {
-  password: string;
-}
+export class UpdateUserDto extends PartialType(CreateUserDto) {}

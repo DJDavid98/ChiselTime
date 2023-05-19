@@ -1,27 +1,28 @@
 import React from 'react';
 import { Metadata, NextPage } from 'next';
 import styles from '../scss/Index.module.scss';
-import logoImage from '../public/logos/app.svg';
+import logoImage from '../public/static/logos/app.svg';
 import Image from 'next/image';
 import { SITE_TITLE } from '../config';
 import { clientEnv } from '../client-env';
+import { publicAssetPath } from '../utils/public-asset-path';
 
 const openGraph: Metadata['openGraph'] = {
   title: 'ChiselTime',
   description:
     'An application that helps with automating Discord message updates',
-  images: '/social.png',
+  images: publicAssetPath('/social.png'),
   type: 'website',
   siteName: SITE_TITLE,
   url: '/',
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(clientEnv.NEXT_PUBLIC_HOST),
+  metadataBase: new URL(clientEnv.PUBLIC_HOST),
   title: openGraph.title,
   description: openGraph.description,
   openGraph,
-  icons: '/logos/logo.png',
+  icons: publicAssetPath('/logos/logo.png'),
 };
 
 const Page: NextPage = () => {

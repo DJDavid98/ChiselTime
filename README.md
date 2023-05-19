@@ -8,6 +8,7 @@ interval.
 ## Attributions
 
 * [NestJS + React (Next.js) in One MVC Repo for Rapid Prototyping](https://medium.com/geekculture/nestjs-react-next-js-in-one-mvc-repo-for-rapid-prototyping-faed42a194ca)
+* [NestJS: Third Party OAuth2 Authentication](https://www.nerd.vision/post/nestjs-third-party-oauth2-authentication)
 
 ## Installation
 

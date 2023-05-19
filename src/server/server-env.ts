@@ -1,13 +1,22 @@
 import { config } from 'dotenv';
+import * as process from 'process';
+import { join } from 'path';
 
-config();
+config({ path: join(process.cwd(), '.env') });
 
 const {
+  PORT,
   DATABASE_HOST,
   DATABASE_PORT,
   DATABASE_USER,
   DATABASE_PASS,
   DATABASE_NAME,
+  PUBLIC_HOST,
+  UA_STRING,
+  DISCORD_CLIENT_ID,
+  DISCORD_CLIENT_SECRET,
+  DISCORD_CLIENT_SCOPES,
+  DISCORD_BOT_TOKEN,
 } = process.env;
 
 /**
@@ -15,11 +24,18 @@ const {
  */
 export const serverEnv = (() => {
   const values = {
+    PORT: PORT || 3000,
     DATABASE_HOST,
     DATABASE_PORT: DATABASE_PORT && parseInt(DATABASE_PORT),
     DATABASE_USER,
     DATABASE_PASS,
     DATABASE_NAME,
+    PUBLIC_HOST,
+    UA_STRING,
+    DISCORD_CLIENT_ID,
+    DISCORD_CLIENT_SECRET,
+    DISCORD_CLIENT_SCOPES,
+    DISCORD_BOT_TOKEN,
   };
 
   type Values = typeof values;

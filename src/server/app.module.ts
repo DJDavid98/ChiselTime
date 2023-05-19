@@ -5,11 +5,12 @@ import { ViewModule } from './view/view.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
+import { DiscordUsersModule } from './discord-user/discord-users.module';
 import dataSource from './common/data-source';
 
 @Module({
   imports: [
-    ViewModule,
     UsersModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
@@ -21,6 +22,9 @@ import dataSource from './common/data-source';
         return dataSource;
       },
     }),
+    AuthModule,
+    DiscordUsersModule,
+    ViewModule,
   ],
   controllers: [AppController],
   providers: [AppService],

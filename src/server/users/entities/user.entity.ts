@@ -2,12 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { USER_NAME_MAX_LENGTH } from '../dto/create-user.dto';
+import type { DiscordUser } from '../../discord-user/entities/discord-user.entity';
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryColumn('uuid', { generated: 'uuid' })
   id: string;
@@ -24,4 +26,7 @@ export class User {
     onUpdate: 'now()',
   })
   updatedAt: Date;
+
+  @OneToMany('DiscordUser', (discordUser: DiscordUser) => discordUser.user)
+  discordUsers: DiscordUser[];
 }
