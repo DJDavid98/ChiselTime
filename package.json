@@ -20,12 +20,14 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "pretypeorm": "build:server",
+    "pretypeorm": "npm run build:server",
     "typeorm": "typeorm-ts-node-commonjs",
-    "pretypeorm:generate": "build:server",
+    "pretypeorm:generate": "npm run build:server",
     "typeorm:generate": "typeorm-ts-node-commonjs migration:generate -d src/server/common/data-source.ts",
-    "pretypeorm:run": "build:server",
-    "typeorm:run": "typeorm-ts-node-commonjs migration:run -d src/server/common/data-source.ts"
+    "pretypeorm:run": "npm run build:server",
+    "typeorm:run": "typeorm-ts-node-commonjs migration:run -d src/server/common/data-source.ts",
+    "pretypeorm:revert": "npm run build:server",
+    "typeorm:revert": "typeorm-ts-node-commonjs migration:revert -d src/server/common/data-source.ts"
   },
   "dependencies": {
     "@discordjs/rest": "^1.7.0",

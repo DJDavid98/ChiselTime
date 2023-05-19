@@ -9,16 +9,27 @@ import { DiscordUsersService } from '../discord-users/discord-users.service';
 import { DiscordStrategy } from './strategies/discord.strategy';
 import { UsersService } from '../users/users.service';
 import { StateModule } from '../state/state.module';
+import { PatreonUsersModule } from '../patreon-users/patreon-users.module';
+import { PatreonUsersService } from '../patreon-users/patreon-users.service';
+import { PatreonStrategy } from './strategies/patreon.strategy';
 
 @Module({
   imports: [
     UsersModule,
     DiscordUsersModule,
+    PatreonUsersModule,
     PassportModule.register({}),
     HttpModule,
     StateModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, UsersService, DiscordUsersService, DiscordStrategy],
+  providers: [
+    AuthService,
+    UsersService,
+    DiscordUsersService,
+    PatreonUsersService,
+    DiscordStrategy,
+    PatreonStrategy,
+  ],
 })
 export class AuthModule {}

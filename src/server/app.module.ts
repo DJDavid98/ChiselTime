@@ -6,12 +6,13 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { DiscordUsersModule } from './discord-user/discord-users.module';
+import { DiscordUsersModule } from './discord-users/discord-users.module';
 import { StateModule } from './state/state.module';
 import dataSource from './common/data-source';
 import { LoggerModule } from 'nestjs-pino';
 import { Request, Response } from 'express';
 import { getRandomUuid } from './utils/random';
+import { PatreonUsersModule } from './patreon-users/patreon-users.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { getRandomUuid } from './utils/random';
     DiscordUsersModule,
     ViewModule,
     StateModule,
+    PatreonUsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

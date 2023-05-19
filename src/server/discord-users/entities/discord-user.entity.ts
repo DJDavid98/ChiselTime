@@ -3,10 +3,12 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import type { User } from '../../users/entities/user.entity';
+import type { PatreonUser } from '../../patreon-users/entities/patreon-user.entity';
 
 @Entity('discord_users')
 export class DiscordUser {
@@ -18,6 +20,12 @@ export class DiscordUser {
 
   @ManyToOne('User', (user: User) => user.discordUsers, { eager: true })
   user: User;
+
+  @OneToOne(
+    'PatreonUser',
+    (patreonUser: PatreonUser) => patreonUser.discordUser,
+  )
+  patreonUser: PatreonUser;
 
   @Column('character varying', { length: 32 })
   name: string;

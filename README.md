@@ -53,4 +53,7 @@ $ npm run typeorm:generate src/server/migrations/MigrationName
 
 # Run database migrations
 $ npm run typeorm:run
+
+# Revert latest migration
+$ npm run typeorm:revert
 ```

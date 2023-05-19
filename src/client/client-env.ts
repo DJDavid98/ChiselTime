@@ -13,7 +13,12 @@ if (!envFilePath) {
   process.exit(1);
 }
 
-const { PUBLIC_HOST, DISCORD_CLIENT_ID, DISCORD_CLIENT_SCOPES } = process.env;
+const {
+  PUBLIC_HOST,
+  DISCORD_CLIENT_ID,
+  DISCORD_CLIENT_SCOPES,
+  PATREON_CLIENT_ID,
+} = process.env;
 
 /**
  * Type-safe process.env
@@ -23,6 +28,7 @@ export const clientEnv = (() => {
     PUBLIC_HOST,
     DISCORD_CLIENT_ID,
     DISCORD_CLIENT_SCOPES,
+    PATREON_CLIENT_ID,
   };
 
   type Values = typeof values;

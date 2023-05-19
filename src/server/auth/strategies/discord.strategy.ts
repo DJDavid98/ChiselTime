@@ -9,7 +9,6 @@ import { publicPath } from '../../utils/public-path';
 import { AppUserValidator } from '../../common/app-user-validator';
 
 @Injectable()
-// implements AppUserValidator
 export class DiscordStrategy
   extends PassportStrategy(Strategy, 'discord')
   implements AppUserValidator
@@ -34,11 +33,7 @@ export class DiscordStrategy
     });
   }
 
-  async validate(
-    accessToken: string,
-    refreshToken: string,
-    // TODO Scopes?
-  ) {
+  async validate(accessToken: string, refreshToken: string) {
     this.logger.debug('Validating Discord access token…');
     const userInfo = await this.authService.getDiscordUserInfo({ accessToken });
     const discordUserId = userInfo.id;

@@ -17,6 +17,8 @@ const {
   DISCORD_CLIENT_SECRET,
   DISCORD_CLIENT_SCOPES,
   DISCORD_BOT_TOKEN,
+  PATREON_CLIENT_ID,
+  PATREON_CLIENT_SECRET,
 } = process.env;
 
 /**
@@ -36,6 +38,8 @@ export const serverEnv = (() => {
     DISCORD_CLIENT_SECRET,
     DISCORD_CLIENT_SCOPES,
     DISCORD_BOT_TOKEN,
+    PATREON_CLIENT_ID,
+    PATREON_CLIENT_SECRET,
   };
 
   type Values = typeof values;

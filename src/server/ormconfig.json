@@ -11,7 +11,7 @@
   ],
   "synchronize": false,
   "migrations": [
-    "dist/server/migrations/*.js"
+    "dist/**/migrations/*.js"
   ],
   "migrationsRun": true,
   "ssl": true,
