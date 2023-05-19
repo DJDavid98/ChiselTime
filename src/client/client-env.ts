@@ -7,7 +7,7 @@ const { NEXT_PUBLIC_HOST } = process.env;
 /**
  * Type-safe process.env
  */
-export const env = (() => {
+export const clientEnv = (() => {
   const values = {
     NEXT_PUBLIC_HOST,
   };
@@ -17,7 +17,7 @@ export const env = (() => {
   Object.keys(values).forEach((key) => {
     if (typeof values[key as keyof Values] !== 'undefined') return;
 
-    throw new Error(`${key} environment variable not set`);
+    throw new Error(`${key} client environment variable not set`);
   });
 
   return values as { [Key in keyof Values]: Exclude<Values[Key], undefined> };
