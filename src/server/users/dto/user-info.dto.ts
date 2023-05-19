@@ -1,4 +1,4 @@
-import { User } from '../entities/user.entity';
+import type { User } from '../entities/user.entity';
 import { DiscordUserInfoDto } from '../../discord-users/dto/discord-user-info.dto';
 import { PatreonUserInfoDto } from '../../patreon-users/dto/patreon-user-info.dto';
 

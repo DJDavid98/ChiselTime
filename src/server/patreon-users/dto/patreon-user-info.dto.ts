@@ -1,4 +1,4 @@
-import { PatreonUser } from '../entities/patreon-user.entity';
+import type { PatreonUser } from '../entities/patreon-user.entity';
 
 export class PatreonUserInfoDto {
   id: string;

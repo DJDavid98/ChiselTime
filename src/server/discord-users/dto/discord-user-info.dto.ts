@@ -1,4 +1,4 @@
-import { DiscordUser } from '../entities/discord-user.entity';
+import type { DiscordUser } from '../entities/discord-user.entity';
 
 export class DiscordUserInfoDto {
   id: string;
