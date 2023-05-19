@@ -1,12 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { DiscordUsersService } from '../discord-user/discord-users.service';
+import { DiscordUsersService } from '../discord-users/discord-users.service';
 import { REST } from '@discordjs/rest';
 import { serverEnv } from '../server-env';
 import { RESTGetAPIUserResult, Routes } from 'discord-api-types/v10';
 import { UsersService } from '../users/users.service';
 import { EntityManager } from 'typeorm';
 import { User } from '../users/entities/user.entity';
-import { DiscordUser } from '../discord-user/entities/discord-user.entity';
+import { DiscordUser } from '../discord-users/entities/discord-user.entity';
 
 @Injectable()
 export class AuthService {

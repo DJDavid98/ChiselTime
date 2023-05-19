@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { USER_NAME_MAX_LENGTH } from '../dto/create-user.dto';
-import type { DiscordUser } from '../../discord-user/entities/discord-user.entity';
+import type { DiscordUser } from '../../discord-users/entities/discord-user.entity';
 
 @Entity('users')
 export class User {
