@@ -8,7 +8,7 @@ export class ViewController {
   constructor(private viewService: ViewService) {}
 
   @Get()
-  public async showHome(@Req() req: Request, @Res() res: Response) {
+  public async showIndex(@Req() req: Request, @Res() res: Response) {
     await this.viewService.handler(req, res);
   }
 
@@ -17,8 +17,8 @@ export class ViewController {
     await this.viewService.handler(req, res);
   }
 
-  @Get('favicon.ico')
-  public async favicon(@Req() req: Request, @Res() res: Response) {
+  @Get('*/*')
+  public async public(@Req() req: Request, @Res() res: Response) {
     await this.viewService.handler(req, res);
   }
 }

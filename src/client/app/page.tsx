@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   title: openGraph.title,
   description: openGraph.description,
   openGraph,
+  icons: '/logos/logo.png',
 };
 
 const Page: NextPage = () => {
