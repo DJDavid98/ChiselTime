@@ -4,6 +4,7 @@ import styles from '../scss/Index.module.scss';
 import logoImage from '../public/logos/app.svg';
 import Image from 'next/image';
 import { SITE_TITLE } from '../config';
+import { env } from '../env';
 
 const openGraph: Metadata['openGraph'] = {
   title: 'ChiselTime',
@@ -13,7 +14,7 @@ const openGraph: Metadata['openGraph'] = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_HOST),
+  metadataBase: new URL(env.NEXT_PUBLIC_HOST),
   title: openGraph.title,
   description: openGraph.description,
   openGraph,
