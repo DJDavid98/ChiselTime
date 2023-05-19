@@ -1,11 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMessageTemplateDto } from './dto/create-message-template.dto';
 import { UpdateMessageTemplateDto } from './dto/update-message-template.dto';
+import { EntityManager } from 'typeorm';
+import { MessageTemplate } from './entities/message-template.entity';
 
 @Injectable()
 export class MessageTemplatesService {
-  create(createMessageTemplateDto: CreateMessageTemplateDto) {
-    return 'This action adds a new messageTemplate';
+  constructor(private readonly entityManager: EntityManager) {}
+
+  async create(createMessageTemplateDto: CreateMessageTemplateDto) {
+    const messageTemplate = new MessageTemplate();
+    messageTemplate.channelId = createMessageTemplateDto.channelId;
+    messageTemplate.messageId = createMessageTemplateDto.messageId;
+    messageTemplate.author = createMessageTemplateDto.author;
+    messageTemplate.updateFrequency = createMessageTemplateDto.updateFrequency;
+    messageTemplate.body = createMessageTemplateDto.body;
+    return await this.entityManager.save(messageTemplate);
   }
 
   findAll() {

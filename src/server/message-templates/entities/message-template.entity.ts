@@ -14,12 +14,20 @@ export class MessageTemplate {
   id: string;
 
   /**
+   * ID of the Discord server where the message was posted
+   *
+   * Represented as string in JS code to avoid losing precision
+   */
+  @Column('bigint', { nullable: false })
+  serverId: string;
+
+  /**
    * ID of the Discord channel where the message was posted
    *
    * Represented as string in JS code to avoid losing precision
    */
   @Column('bigint', { nullable: false })
-  channelId: string | null;
+  channelId: string;
 
   /**
    * ID of the corresponding message on Discord

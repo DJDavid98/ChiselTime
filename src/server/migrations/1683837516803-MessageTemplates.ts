@@ -6,6 +6,7 @@ export class MessageTemplates1683837516803 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`CREATE TABLE "message_template" (
         "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+        "serverId" bigint NOT NULL,
         "channelId" bigint NOT NULL,
         "messageId" bigint NOT NULL,
         "body" text NOT NULL,

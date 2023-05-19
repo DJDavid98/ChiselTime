@@ -6,7 +6,7 @@ import { serverEnv } from './server-env';
 import { CorrelationIdMiddleware } from '@eropple/nestjs-correlation-id';
 import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 
-async function bootstrap() {
+export async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.useGlobalPipes(
     new ValidationPipe({
@@ -29,6 +29,5 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   await app.listen(serverEnv.PORT);
+  return app;
 }
-
-bootstrap();

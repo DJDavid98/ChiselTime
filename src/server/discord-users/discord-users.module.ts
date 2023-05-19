@@ -5,4 +5,10 @@ import { DiscordUsersService } from './discord-users.service';
   controllers: [],
   providers: [DiscordUsersService],
 })
-export class DiscordUsersModule {}
+export class DiscordUsersModule {
+  constructor(private readonly service: DiscordUsersService) {}
+
+  findOne(id: string) {
+    return this.service.findOne(id);
+  }
+}

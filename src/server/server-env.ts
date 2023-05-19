@@ -6,6 +6,7 @@ config({ path: join(process.cwd(), '.env') });
 
 const {
   PORT,
+  LOCAL,
   DATABASE_HOST,
   DATABASE_PORT,
   DATABASE_USER,
@@ -21,6 +22,8 @@ const {
   DISCORD_CLIENT_SECRET,
   DISCORD_CLIENT_SCOPES,
   DISCORD_BOT_TOKEN,
+  DISCORD_INVITE_URL,
+  DISCORD_TEST_GUILD_ID,
   PATREON_CLIENT_ID,
   PATREON_CLIENT_SECRET,
 } = process.env;
@@ -30,6 +33,7 @@ const {
  */
 export const serverEnv = (() => {
   const values = {
+    LOCAL: LOCAL === 'true',
     PORT: PORT || 3000,
     DATABASE_HOST,
     DATABASE_PORT: DATABASE_PORT ? parseInt(DATABASE_PORT) : undefined,
@@ -46,6 +50,8 @@ export const serverEnv = (() => {
     DISCORD_CLIENT_SECRET,
     DISCORD_CLIENT_SCOPES,
     DISCORD_BOT_TOKEN,
+    DISCORD_INVITE_URL,
+    DISCORD_TEST_GUILD_ID: DISCORD_TEST_GUILD_ID || '',
     PATREON_CLIENT_ID,
     PATREON_CLIENT_SECRET,
   };
