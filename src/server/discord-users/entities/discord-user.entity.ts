@@ -3,12 +3,14 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import type { User } from '../../users/entities/user.entity';
 import type { PatreonUser } from '../../patreon-users/entities/patreon-user.entity';
+import { MessageTemplate } from '../../message-templates/entities/message-template.entity';
 
 @Entity('discord_users')
 export class DiscordUser {
@@ -57,4 +59,11 @@ export class DiscordUser {
     onUpdate: 'now()',
   })
   updatedAt: Date;
+
+  @OneToMany(
+    'MessageTemplate',
+    (messageTemplate: MessageTemplate) => messageTemplate.author,
+    { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
+  )
+  messageTemplates: MessageTemplate[];
 }

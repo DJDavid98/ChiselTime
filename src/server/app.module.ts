@@ -14,6 +14,9 @@ import { Request, Response } from 'express';
 import { getRandomUuid } from './utils/random';
 import { PatreonUsersModule } from './patreon-users/patreon-users.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { BullModule } from '@nestjs/bull';
+import { serverEnv } from './server-env';
+import { MessageTemplatesModule } from './message-templates/message-templates.module';
 
 @Module({
   imports: [
@@ -52,12 +55,21 @@ import { ScheduleModule } from '@nestjs/schedule';
         quietReqLogger: true,
       },
     }),
+    BullModule.forRoot({
+      redis: {
+        host: serverEnv.REDIS_HOST,
+        port: serverEnv.REDIS_PORT,
+        username: serverEnv.REDIS_USER,
+        password: serverEnv.REDIS_PASS,
+      },
+    }),
     AuthModule,
     ScheduleModule.forRoot(),
     DiscordUsersModule,
     ViewModule,
     StateModule,
     PatreonUsersModule,
+    MessageTemplatesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
