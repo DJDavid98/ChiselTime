@@ -68,4 +68,15 @@ export class MessageTemplate {
     onUpdate: 'now()',
   })
   updatedAt: Date;
+
+  /**
+   * Retrieves the URL for the message, which displays as a clickable link in the client
+   */
+  getMessageUrl(): string {
+    return `https://discord.com/channels/${[
+      this.serverId,
+      this.channelId,
+      this.messageId,
+    ].join('/')}`;
+  }
 }

@@ -14,7 +14,7 @@ import { BotSlashCommandsModule } from '../bot-slash-commands/bot-slash-commands
       useFactory: () => ({
         token: serverEnv.DISCORD_BOT_TOKEN,
         discordClientOptions: {
-          intents: [GatewayIntentBits.Guilds],
+          intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
         },
         registerCommandOptions: [
           {

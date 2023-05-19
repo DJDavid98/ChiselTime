@@ -29,4 +29,9 @@ export class User {
 
   @OneToMany('DiscordUser', (discordUser: DiscordUser) => discordUser.user)
   discordUsers: DiscordUser[];
+
+  getMaxTemplateCount(): number {
+    // TODO Provide this based on Patreon subscription tier
+    return 1;
+  }
 }

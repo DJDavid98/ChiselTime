@@ -8,7 +8,6 @@ import { Command, Handler } from '@discord-nestjs/core';
 import { EntityManager } from 'typeorm';
 import { DiscordUser } from '../../discord-users/entities/discord-user.entity';
 import { MessageTemplate } from '../../message-templates/entities/message-template.entity';
-import { Temporal } from '@js-temporal/polyfill';
 import { replaceIntervalsInString } from '../../utils/interval-parsing';
 import { CreateMessageTemplateDto } from '../../message-templates/dto/create-message-template.dto';
 
@@ -52,6 +51,23 @@ export class CreateTemplateCommand {
       return;
     }
 
+    const userTemplates = await this.entityManager.find(MessageTemplate, {
+      where: { author: { id: discordUser.id } },
+    });
+    const maxTemplateCount = discordUser.user.getMaxTemplateCount();
+    if (userTemplates.length >= maxTemplateCount) {
+      await interaction.reply({
+        content: [
+          `You have reached the maximum number of templates (${maxTemplateCount}) for your account, delete existing templates to create a new one:`,
+          ...userTemplates.map(
+            (template) => `• ${template.getMessageUrl()} (\`${template.id}\`)`,
+          ),
+        ].join('\n'),
+        ephemeral: true,
+      });
+      return;
+    }
+
     const existingTemplate = await this.entityManager.findOne(MessageTemplate, {
       where: {
         channelId: message.channelId,
@@ -61,12 +77,8 @@ export class CreateTemplateCommand {
     if (existingTemplate) {
       await interaction.reply({
         content: [
-          `Template already exists with ID ${existingTemplate.id}`,
-          `Message link: https://discord.com/channels/${[
-            existingTemplate.serverId,
-            existingTemplate.channelId,
-            existingTemplate.messageId,
-          ].join('/')}`,
+          `Template already exists with ID \`${existingTemplate.id}\``,
+          `Message link: ${existingTemplate.getMessageUrl()}`,
         ].join('\n'),
         ephemeral: true,
       });
@@ -91,14 +103,8 @@ export class CreateTemplateCommand {
     );
     templateMessage = await this.entityManager.save(templateMessage);
 
-    const readableUpdateFrequency = Temporal.Duration.from(
-      templateMessage.updateFrequency,
-    );
-
     await interaction.reply({
-      content: `Template ${
-        templateMessage.id
-      } created successfully with an update frequency of ${readableUpdateFrequency.toString()}`,
+      content: `Template \`${templateMessage.id}\` created successfully with an update frequency of \`${templateMessage.updateFrequency}\``,
       ephemeral: true,
     });
   }

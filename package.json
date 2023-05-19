@@ -30,6 +30,7 @@
     "typeorm:revert": "typeorm-ts-node-commonjs migration:revert -d src/server/common/data-source.ts"
   },
   "dependencies": {
+    "@discord-nestjs/common": "^5.2.4",
     "@discord-nestjs/core": "^5.3.6",
     "@discordjs/rest": "^1.7.0",
     "@eropple/nestjs-correlation-id": "^1.0.1",
