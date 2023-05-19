@@ -1,4 +1,7 @@
 const defaultConfig = require('./src/server/ormconfig.json');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 module.exports = {
   ...defaultConfig,

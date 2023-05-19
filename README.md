@@ -1,6 +1,9 @@
 # ChiselTime
 
-ChiselTime is an application intended to help with automating message updates to bridge the gap in Discord's timestamps feature which does not allow for things like specifying "5pm Friday" and have it actually point to the specific date and time each week. This is done by creating a message via the bot's slash commands, which is then updated at a configurable interval.
+ChiselTime is an application intended to help with automating message updates to bridge the gap in Discord's timestamps
+feature which does not allow for things like specifying "5pm Friday" and have it actually point to the specific date and
+time each week. This is done by creating a message via the bot's slash commands, which is then updated at a configurable
+interval.
 
 ## Attributions
 
@@ -48,5 +51,5 @@ $ npx typeorm migration:create src/server/migrations/MigrationName
 $ npm run typeorm:generate src/server/migrations/MigrationName
 
 # Run database migrations
-$ npx typeorm migration:run
+$ npm run typeorm:run
 ```

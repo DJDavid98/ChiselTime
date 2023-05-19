@@ -8,8 +8,9 @@ if [[ "$refname" ==  "$RUN_FOR_REF" ]]; then
     GIT="env -i git"
     CMD_CD="cd $(readlink -nf "$PWD/..")"
     CMD_FETCH="$GIT fetch"
-    CMD_DEPS="npm"
+    CMD_DEPS="npm ci"
     CMD_BUILD="nice npm run build"
+    CMD_MIGRATE="npm run typeorm:run"
     CMD_RESTART="pm2 reload pm2.json"
 
     echo "$ $CMD_CD"
@@ -35,6 +36,9 @@ if [[ "$refname" ==  "$RUN_FOR_REF" ]]; then
     else
         echo "# Skipping build, no changes in src folder"
     fi
+
+    echo "$ $CMD_MIGRATE"
+    eval $CMD_MIGRATE
 
     echo "$ $CMD_RESTART"
     eval $CMD_RESTART
