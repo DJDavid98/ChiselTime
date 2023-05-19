@@ -1,0 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap");
+@import 'scss/vars';
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  background-color: #000;
+  background-image: linear-gradient(165deg, $bg-gradient-start 0%, $bg-gradient-mid 50%, $bg-gradient-end 100%);
+  color: $primary;
+}

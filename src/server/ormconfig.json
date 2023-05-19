@@ -1,0 +1,27 @@
+{
+  "name": "default",
+  "type": "postgres",
+  "host": "127.0.0.1",
+  "port": 5432,
+  "username": "chiseltime",
+  "password": "",
+  "database": "chiseltime",
+  "entities": [
+    "dist/**/*.entity.js"
+  ],
+  "synchronize": false,
+  "migrations": [
+    "dist/migrations/*.js"
+  ],
+  "migrationsRun": true,
+  "ssl": true,
+  "cli": {
+    "migrationsDir": "src/server/migrations"
+  },
+  "extra": {
+    "ssl": {
+      "rejectUnauthorized": false
+    }
+  }
+}
+
