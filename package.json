@@ -32,6 +32,7 @@
   "dependencies": {
     "@discordjs/rest": "^1.7.0",
     "@eropple/nestjs-correlation-id": "^1.0.1",
+    "@js-temporal/polyfill": "^0.4.3",
     "@nestjs/axios": "^2.0.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.1",
