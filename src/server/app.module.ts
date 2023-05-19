@@ -13,6 +13,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { Request, Response } from 'express';
 import { getRandomUuid } from './utils/random';
 import { PatreonUsersModule } from './patreon-users/patreon-users.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { PatreonUsersModule } from './patreon-users/patreon-users.module';
       },
     }),
     AuthModule,
+    ScheduleModule.forRoot(),
     DiscordUsersModule,
     ViewModule,
     StateModule,

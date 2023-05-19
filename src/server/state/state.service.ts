@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { getRandomUuid } from '../utils/random';
-import { EntityManager } from 'typeorm';
+import { DataSource, EntityManager } from 'typeorm';
 import { State } from './entities/state.entity';
 import {
   Metadata,
@@ -8,6 +8,7 @@ import {
   StateStoreStoreCallback,
   StateStoreVerifyCallback,
 } from 'passport-oauth2';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 /**
  * Generate and consume OAuth state parameters for CSRF protection purposes
@@ -16,7 +17,12 @@ import {
 export class StateService implements StateStore {
   private readonly logger = new Logger(StateService.name);
 
-  constructor(private readonly entityManager: EntityManager) {}
+  public static STALE_TIME_MS = 3600e3;
+
+  constructor(
+    private readonly entityManager: EntityManager,
+    private readonly dataSource: DataSource,
+  ) {}
 
   store(req: unknown, callback: StateStoreStoreCallback): void;
   store(req: unknown, Metadata: any, callback: StateStoreStoreCallback): void;
@@ -96,5 +102,24 @@ export class StateService implements StateStore {
       throw new Error('Could not find callback parameter');
     }
     return callbackFn;
+  }
+
+  @Cron(CronExpression.EVERY_HOUR, {
+    name: 'stateCleanup',
+  })
+  async cleanupOldStateValues() {
+    this.logger.log('Cleaning up stale state values…');
+    const result = await this.dataSource
+      .createQueryBuilder()
+      .delete()
+      .from('states')
+      .where(
+        `createdAt + INTERVAL '${Math.round(
+          StateService.STALE_TIME_MS / 1e3,
+        )} SECOND' < NOW()`,
+      )
+      .execute();
+    const rowCount = typeof result.affected === 'number' ? result.affected : 0;
+    this.logger.log(`Cleaned up ${rowCount} stale state values`);
   }
 }
