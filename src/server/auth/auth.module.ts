@@ -8,6 +8,7 @@ import { DiscordUsersModule } from '../discord-user/discord-users.module';
 import { DiscordUsersService } from '../discord-user/discord-users.service';
 import { DiscordStrategy } from './strategies/discord.strategy';
 import { UsersService } from '../users/users.service';
+import { StateModule } from '../state/state.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UsersService } from '../users/users.service';
     DiscordUsersModule,
     PassportModule.register({}),
     HttpModule,
+    StateModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, UsersService, DiscordUsersService, DiscordStrategy],

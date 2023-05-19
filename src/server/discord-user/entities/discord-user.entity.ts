@@ -2,7 +2,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   PrimaryColumn,
   UpdateDateColumn,
@@ -17,8 +16,7 @@ export class DiscordUser {
   @PrimaryColumn('bigint')
   id: string;
 
-  @ManyToOne('User', (user: User) => user.discordUsers)
-  @JoinColumn()
+  @ManyToOne('User', (user: User) => user.discordUsers, { eager: true })
   user: User;
 
   @Column('character varying', { length: 32 })

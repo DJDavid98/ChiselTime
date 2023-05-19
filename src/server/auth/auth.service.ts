@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { DiscordUsersService } from '../discord-user/discord-users.service';
 import { REST } from '@discordjs/rest';
 import { serverEnv } from '../server-env';
@@ -11,18 +11,21 @@ import { DiscordUser } from '../discord-user/entities/discord-user.entity';
 @Injectable()
 export class AuthService {
   private readonly discordBotRestClient: REST;
+  private readonly logger = new Logger(AuthService.name);
 
   constructor(
     private readonly usersService: UsersService,
     private readonly discordUsersService: DiscordUsersService,
     private readonly entityManager: EntityManager,
   ) {
-    this.discordBotRestClient = AuthService.createDiscordRestClient(
+    this.logger.debug(`Creating default Discord API REST client…`);
+    this.discordBotRestClient = this.createDiscordRestClient(
       serverEnv.DISCORD_BOT_TOKEN,
     );
   }
 
-  private static createDiscordRestClient(token: string) {
+  private createDiscordRestClient(token: string) {
+    this.logger.debug(`Creating Discord API REST client…`);
     return new REST({
       version: '10',
       userAgentAppendix: serverEnv.UA_STRING,
@@ -30,9 +33,15 @@ export class AuthService {
   }
 
   getDiscordUserInfo(params: { userId?: string; accessToken?: string }) {
+    this.logger.debug(`Getting Discord API REST client…`);
     const effectiveClient = params.accessToken
-      ? AuthService.createDiscordRestClient(params.accessToken)
+      ? this.createDiscordRestClient(params.accessToken)
       : this.discordBotRestClient;
+    this.logger.debug(
+      `Retrieving Discord user info ${
+        params.accessToken ? 'via access token' : `for user ID ${params.userId}`
+      }…`,
+    );
     return effectiveClient.get(Routes.user(params.userId), {
       authPrefix: params.accessToken ? 'Bearer' : undefined,
     }) as Promise<RESTGetAPIUserResult>;
@@ -47,6 +56,7 @@ export class AuthService {
       scopes?: string;
     },
   ): Promise<DiscordUser> {
+    this.logger.debug(`Creating Discord user information object…`);
     const discordUser = await this.discordUsersService.create(
       {
         id: apiUserInfo.id,
@@ -59,21 +69,36 @@ export class AuthService {
       },
       false,
     );
+    this.logger.debug(
+      `Saving information for Discord user (${discordUser.id})…`,
+    );
     await this.entityManager.transaction(async (em) => {
       if (options.existingUser) {
+        this.logger.debug(
+          `Linking Discord user ${discordUser.id} to existing user ${options.existingUser.id}…`,
+        );
         discordUser.user = options.existingUser;
       } else {
-        const appUser = await this.usersService.create(
+        this.logger.debug(
+          `Creating new local user for Discord user (${discordUser.id})…`,
+        );
+        let appUser = await this.usersService.create(
           { name: discordUser.name + '#' + discordUser.discriminator },
           false,
         );
-        await em.save(appUser);
+        appUser = await em.save(appUser);
 
+        this.logger.debug(
+          `Linking Discord user (${discordUser.id}) to new user (${appUser.id})…`,
+        );
         discordUser.user = appUser;
       }
 
       await em.save(discordUser);
     });
+    this.logger.debug(
+      `Information for Discord user (${discordUser.id}) saved successfully`,
+    );
     return discordUser;
   }
 
@@ -86,6 +111,7 @@ export class AuthService {
       scopes?: string;
     },
   ): Promise<DiscordUser> {
+    this.logger.debug(`Updating Discord user (${discordUser.id})…`);
     return await this.discordUsersService.update(discordUser, {
       name: apiUserInfo.username,
       discriminator: apiUserInfo.discriminator,
@@ -97,6 +123,7 @@ export class AuthService {
   }
 
   async findUserFromDiscordId(discordId: string): Promise<DiscordUser | null> {
+    this.logger.debug(`Finding Discord user with ID ${discordId}…`);
     return await this.discordUsersService.findOne(discordId);
   }
 }

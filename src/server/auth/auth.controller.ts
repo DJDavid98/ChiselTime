@@ -8,25 +8,14 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
-import { clientEnv } from '../../client/client-env';
-import { publicPath } from '../utils/public-path';
 
 @Controller('auth')
 export class AuthController {
   @Get('login/discord')
-  @Redirect(
-    `https://discord.com/oauth2/authorize?${new URLSearchParams({
-      client_id: clientEnv.DISCORD_CLIENT_ID,
-      permissions: '0',
-      response_type: 'code',
-      scope: clientEnv.DISCORD_CLIENT_SCOPES,
-      redirect_uri: publicPath('/auth/discord'),
-      prompt: 'none',
-    })}`,
-    HttpStatus.TEMPORARY_REDIRECT,
-  )
+  @UseGuards(AuthGuard('discord'))
+  @Redirect('/', HttpStatus.TEMPORARY_REDIRECT)
   loginWithDiscord() {
-    // noop
+    // Because this uses the AuthGuard we do not need to manually redirect to the authorization URL
   }
 
   @Get('discord')

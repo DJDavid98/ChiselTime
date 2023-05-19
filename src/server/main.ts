@@ -3,14 +3,22 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { serverEnv } from './server-env';
+import { CorrelationIdMiddleware } from '@eropple/nestjs-correlation-id';
+import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
     }),
   );
+
+  app.useGlobalInterceptors(new LoggerErrorInterceptor());
+  app.useLogger(app.get(Logger));
+  app.flushLogs();
+
+  app.use(CorrelationIdMiddleware());
 
   const config = new DocumentBuilder()
     .setTitle('ChiselTime API')
