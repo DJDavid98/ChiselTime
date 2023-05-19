@@ -1,0 +1,57 @@
+@use 'vars';
+
+.info {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: vars.$primary;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  a {
+    color: inherit;
+  }
+
+  .username {
+    font-weight: bold;
+  }
+
+  .divider {
+    display: inline-block;
+    margin: 0 .5rem;
+    opacity: .75;
+
+    &:before {
+      content: "•";
+    }
+  }
+
+  .tier {
+    margin-left: .5rem;
+    text-transform: uppercase;
+    padding: 0 .25rem;
+    font-weight: bold;
+    border-radius: .25rem;
+    color: #000;
+    background-color: #fff;
+
+    &.supporter {
+      background-color: vars.$patreon;
+    }
+  }
+
+  .logout {
+    display: inline;
+
+    button {
+      appearance: none;
+      background-color: transparent;
+      border: 0;
+      text-decoration: underline;
+      color: inherit;
+      cursor: pointer;
+      font: inherit;
+    }
+  }
+}

@@ -27,7 +27,9 @@ export class User {
   })
   updatedAt: Date;
 
-  @OneToMany('DiscordUser', (discordUser: DiscordUser) => discordUser.user)
+  @OneToMany('DiscordUser', (discordUser: DiscordUser) => discordUser.user, {
+    eager: true,
+  })
   discordUsers: DiscordUser[];
 
   getMaxTemplateCount(): number {

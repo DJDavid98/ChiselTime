@@ -20,14 +20,15 @@ export class DiscordUser {
   @PrimaryColumn('bigint')
   id: string;
 
-  @ManyToOne('User', (user: User) => user.discordUsers, { eager: true })
-  user: User;
+  @ManyToOne('User', (user: User) => user.discordUsers)
+  user: Promise<User>;
 
   @OneToOne(
     'PatreonUser',
     (patreonUser: PatreonUser) => patreonUser.discordUser,
+    { eager: true },
   )
-  patreonUser: PatreonUser;
+  patreonUser?: PatreonUser;
 
   @Column('character varying', { length: 32 })
   name: string;

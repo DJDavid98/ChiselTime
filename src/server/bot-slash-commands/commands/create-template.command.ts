@@ -54,7 +54,8 @@ export class CreateTemplateCommand {
     const userTemplates = await this.entityManager.find(MessageTemplate, {
       where: { author: { id: discordUser.id } },
     });
-    const maxTemplateCount = discordUser.user.getMaxTemplateCount();
+    const localUser = await discordUser.user;
+    const maxTemplateCount = localUser.getMaxTemplateCount();
     if (userTemplates.length >= maxTemplateCount) {
       await interaction.reply({
         content: [

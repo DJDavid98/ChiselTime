@@ -17,11 +17,9 @@ export class PatreonUser {
   @PrimaryColumn('character varying')
   id: string;
 
-  @OneToOne('DiscordUser', (user: DiscordUser) => user.patreonUser, {
-    eager: true,
-  })
+  @OneToOne('DiscordUser', (user: DiscordUser) => user.patreonUser)
   @JoinColumn()
-  discordUser: DiscordUser;
+  discordUser: Promise<DiscordUser>;
 
   @Column('character varying', { length: 64 })
   name: string;

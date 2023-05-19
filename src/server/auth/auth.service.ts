@@ -81,7 +81,7 @@ export class AuthService {
         this.logger.debug(
           `Linking Discord user ${discordUser.id} to existing user ${options.existingUser.id}…`,
         );
-        discordUser.user = options.existingUser;
+        discordUser.user = Promise.resolve(options.existingUser);
       } else {
         this.logger.debug(
           `Creating new local user for Discord user (${discordUser.id})…`,
@@ -95,7 +95,7 @@ export class AuthService {
         this.logger.debug(
           `Linking Discord user (${discordUser.id}) to new user (${appUser.id})…`,
         );
-        discordUser.user = appUser;
+        discordUser.user = Promise.resolve(appUser);
       }
 
       await em.save(discordUser);
@@ -219,7 +219,7 @@ export class AuthService {
         this.logger.debug(
           `Linking Patreon user (${patreonUser.id}) to new user (${discordUser.id})…`,
         );
-        patreonUser.discordUser = discordUser;
+        patreonUser.discordUser = Promise.resolve(discordUser);
       }
 
       await em.save(patreonUser);

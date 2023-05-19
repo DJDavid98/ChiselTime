@@ -1,12 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
+import { Repository } from 'typeorm';
 import { DiscordUser } from './entities/discord-user.entity';
 import { CreateDiscordUserDto } from './dto/create-discord-user.dto';
 import { UpdateDiscordUserDto } from './dto/update-discord-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class DiscordUsersService {
-  constructor(private readonly entityManager: EntityManager) {}
+  constructor(
+    @InjectRepository(DiscordUser)
+    private readonly discordUserRepository: Repository<DiscordUser>,
+  ) {}
 
   async create(createDiscordUserDto: CreateDiscordUserDto, save = true) {
     const discordUser = new DiscordUser();
@@ -15,17 +19,17 @@ export class DiscordUsersService {
     discordUser.discriminator = createDiscordUserDto.discriminator;
     discordUser.avatar = createDiscordUserDto.avatar;
     if (save) {
-      await this.entityManager.save(discordUser);
+      await this.discordUserRepository.save(discordUser);
     }
     return discordUser;
   }
 
   async findOne(id: string) {
-    return this.entityManager.findOne(DiscordUser, { where: { id } });
+    return this.discordUserRepository.findOneBy({ id });
   }
 
   async delete(id: string) {
-    await this.entityManager.delete(DiscordUser, { id });
+    await this.discordUserRepository.delete({ id });
   }
 
   async update(
@@ -59,7 +63,7 @@ export class DiscordUsersService {
     if (updateDiscordUserDto.scopes) {
       discordUser.scopes = updateDiscordUserDto.scopes;
     }
-    await this.entityManager.save(discordUser);
+    await this.discordUserRepository.save(discordUser);
     return discordUser;
   }
 }

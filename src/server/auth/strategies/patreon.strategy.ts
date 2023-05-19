@@ -54,10 +54,11 @@ export class PatreonStrategy
       );
     }
 
+    const discordUser = await patreonUser.discordUser;
     this.logger.debug(
-      `Patreon user with ID ${patreonUserId} validated, Discord user ID: ${patreonUser.discordUser.id}`,
+      `Patreon user with ID ${patreonUserId} validated, Discord user ID: ${discordUser.id}`,
     );
 
-    return patreonUser.discordUser.user;
+    return await discordUser.user;
   }
 }

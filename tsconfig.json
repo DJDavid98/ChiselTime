@@ -19,10 +19,15 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
-    "preserveWatchOutput": true
+    "preserveWatchOutput": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "types"
+    ]
   },
   "include": [
     "src/server",
+    "types",
     "test"
   ]
 }

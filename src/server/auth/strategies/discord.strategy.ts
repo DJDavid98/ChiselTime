@@ -57,10 +57,11 @@ export class DiscordStrategy
       );
     }
 
+    const localUser = await discordUser.user;
     this.logger.debug(
-      `Discord user with ID ${discordUserId} validated, local user ID: ${discordUser.user.id}`,
+      `Discord user with ID ${discordUserId} validated, local user ID: ${localUser.id}`,
     );
 
-    return discordUser.user;
+    return localUser;
   }
 }

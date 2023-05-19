@@ -21,6 +21,8 @@ lerna-debug.log*
 
 # Configuration
 .env
+# Fastify secure session key
+secret-key
 
 # IDEs and editors
 /.idea

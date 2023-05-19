@@ -2,12 +2,15 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Post,
   Redirect,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+import { Request, Response } from 'express';
+import { SessionUserGuard } from './guards/session-user.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -27,13 +30,27 @@ export class AuthController {
 
   @Get('discord')
   @UseGuards(AuthGuard('discord'))
-  async getUserFromDiscordLogin(@Req() req: Request) {
-    return req.user;
+  async getUserFromDiscordLogin(@Req() req: Request, @Res() res: Response) {
+    if (req.user) {
+      req.session.userId = req.user.id;
+    }
+
+    res.status(HttpStatus.TEMPORARY_REDIRECT).redirect('/');
   }
 
   @Get('patreon')
   @UseGuards(AuthGuard('patreon'))
-  async getUserFromPatreonLogin(@Req() req: Request) {
-    return req.user;
+  @Redirect('/', HttpStatus.TEMPORARY_REDIRECT)
+  async getUserFromPatreonLogin() {
+    // Because this uses the AuthGuard we do not need to manually redirect to the authorization URL
+  }
+
+  @Post('logout')
+  // TODO CSRF protection
+  @UseGuards(SessionUserGuard)
+  async logout(@Req() req: Request, @Res() res: Response) {
+    delete req.session.userId;
+
+    res.status(HttpStatus.TEMPORARY_REDIRECT).redirect('/');
   }
 }

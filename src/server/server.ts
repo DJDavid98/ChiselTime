@@ -8,6 +8,11 @@ import { Logger } from 'nestjs-pino';
   const app = await bootstrap();
   const logger = app.get(Logger);
 
+  if (!serverEnv.DISCORD_BOT_ENABLED) {
+    logger.warn('Discord bot is disabled via ENV config, skipping bot startup');
+    return;
+  }
+
   const botScriptPath = join(__dirname, 'bot', 'index.js');
 
   logger.log(

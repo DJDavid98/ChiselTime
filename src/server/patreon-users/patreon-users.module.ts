@@ -4,5 +4,6 @@ import { PatreonUsersService } from './patreon-users.service';
 @Module({
   controllers: [],
   providers: [PatreonUsersService],
+  exports: [PatreonUsersService],
 })
 export class PatreonUsersModule {}

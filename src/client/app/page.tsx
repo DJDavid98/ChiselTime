@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Metadata, NextPage } from 'next';
 import styles from '../scss/Index.module.scss';
 import logoImage from '../public/static/logos/app.svg';
@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { SITE_TITLE } from '../config';
 import { clientEnv } from '../client-env';
 import { publicAssetPath } from '../utils/public-asset-path';
+import { UserInfo } from '../components/UserInfo';
 
 const openGraph: Metadata['openGraph'] = {
   title: 'ChiselTime',
@@ -27,18 +28,21 @@ export const metadata: Metadata = {
 
 const Page: NextPage = () => {
   return (
-    <div className={styles.index}>
-      <h1>
-        <Image
-          src={logoImage}
-          width={120}
-          height={120}
-          alt={`${SITE_TITLE} logo`}
-        />
-        <span>ChiselTime</span>
-      </h1>
-      <p>Coming soon…</p>
-    </div>
+    <Fragment>
+      <div className={styles.index}>
+        <h1>
+          <Image
+            src={logoImage}
+            width={120}
+            height={120}
+            alt={`${SITE_TITLE} logo`}
+          />
+          <span>ChiselTime</span>
+        </h1>
+        <p>Coming soon…</p>
+      </div>
+      <UserInfo />
+    </Fragment>
   );
 };
 
