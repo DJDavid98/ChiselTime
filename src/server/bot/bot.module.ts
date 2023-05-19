@@ -9,7 +9,6 @@ import { BotSlashCommandsModule } from '../bot-slash-commands/bot-slash-commands
 @Module({
   imports: [
     SharedModule,
-    // TODO Replace with https://necord.org/
     DiscordModule.forRootAsync({
       useFactory: () => ({
         token: serverEnv.DISCORD_BOT_TOKEN,

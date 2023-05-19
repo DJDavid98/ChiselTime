@@ -12,6 +12,7 @@ import { StateModule } from '../state/state.module';
 import { PatreonUsersModule } from '../patreon-users/patreon-users.module';
 import { PatreonUsersService } from '../patreon-users/patreon-users.service';
 import { PatreonStrategy } from './strategies/patreon.strategy';
+import { DiscordRestModule } from '../discord-rest/discord-rest.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { PatreonStrategy } from './strategies/patreon.strategy';
     PassportModule.register({}),
     HttpModule,
     StateModule,
+    DiscordRestModule,
   ],
   controllers: [AuthController],
   providers: [

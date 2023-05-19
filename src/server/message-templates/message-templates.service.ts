@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMessageTemplateDto } from './dto/create-message-template.dto';
 import { UpdateMessageTemplateDto } from './dto/update-message-template.dto';
-import { EntityManager } from 'typeorm';
+import { Repository } from 'typeorm';
 import { MessageTemplate } from './entities/message-template.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class MessageTemplatesService {
-  constructor(private readonly entityManager: EntityManager) {}
+  constructor(
+    @InjectRepository(MessageTemplate)
+    private readonly messageTemplatesRepository: Repository<MessageTemplate>,
+  ) {}
 
   async create(createMessageTemplateDto: CreateMessageTemplateDto) {
     const messageTemplate = new MessageTemplate();
@@ -15,22 +19,41 @@ export class MessageTemplatesService {
     messageTemplate.author = createMessageTemplateDto.author;
     messageTemplate.updateFrequency = createMessageTemplateDto.updateFrequency;
     messageTemplate.body = createMessageTemplateDto.body;
-    return await this.entityManager.save(messageTemplate);
+    return await this.messageTemplatesRepository.save(messageTemplate);
   }
 
-  findAll() {
-    return `This action returns all messageTemplates`;
+  async findAll(options: { staleOnly?: boolean }) {
+    let query = this.messageTemplatesRepository.createQueryBuilder('mt');
+    if (options.staleOnly) {
+      query = query
+        .where('mt."lastEditedAt" IS NULL')
+        .orWhere('mt."lastEditedAt" + mt."updateFrequency"::interval < NOW()');
+    }
+    return await query.getMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} messageTemplate`;
+  findOne(id: string) {
+    return this.messageTemplatesRepository.findOneBy({ id });
   }
 
-  update(id: number, updateMessageTemplateDto: UpdateMessageTemplateDto) {
-    return `This action updates a #${id} messageTemplate`;
+  update(
+    messageTemplate: MessageTemplate,
+    updateMessageTemplateDto: UpdateMessageTemplateDto,
+  ) {
+    if (updateMessageTemplateDto.body) {
+      messageTemplate.body = updateMessageTemplateDto.body;
+    }
+    if (updateMessageTemplateDto.updateFrequency) {
+      messageTemplate.updateFrequency =
+        updateMessageTemplateDto.updateFrequency;
+    }
+    if (updateMessageTemplateDto.lastEditedAt) {
+      messageTemplate.lastEditedAt = updateMessageTemplateDto.lastEditedAt;
+    }
+    return this.messageTemplatesRepository.save(messageTemplate);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} messageTemplate`;
+  remove(id: string) {
+    return this.messageTemplatesRepository.delete({ id });
   }
 }

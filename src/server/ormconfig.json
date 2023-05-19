@@ -9,6 +9,8 @@
   "entities": [
     "dist/**/*.entity.js"
   ],
+  "logging": true,
+  "logger": "advanced-console",
   "synchronize": false,
   "migrations": [
     "dist/**/migrations/*.js"

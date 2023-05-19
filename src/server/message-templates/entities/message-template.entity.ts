@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import type { DiscordUser } from '../../discord-users/entities/discord-user.entity';
 
-@Entity()
+@Entity('message_templates')
 export class MessageTemplate {
   @PrimaryColumn('uuid', { generated: 'uuid' })
   id: string;
@@ -57,7 +57,7 @@ export class MessageTemplate {
   updateFrequency: string;
 
   @Column('timestamptz', { default: null, nullable: true })
-  lastEditedAt: Date;
+  lastEditedAt: Date | null;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'now()' })
   createdAt: Date;

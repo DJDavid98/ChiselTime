@@ -4,8 +4,6 @@ import {
   Logger,
 } from '@nestjs/common';
 import { DiscordUsersService } from '../discord-users/discord-users.service';
-import { REST } from '@discordjs/rest';
-import { serverEnv } from '../server-env';
 import { RESTGetAPIUserResult, Routes } from 'discord-api-types/v10';
 import { UsersService } from '../users/users.service';
 import { EntityManager } from 'typeorm';
@@ -21,38 +19,28 @@ import { PatreonUser } from '../patreon-users/entities/patreon-user.entity';
 import { PatreonUsersService } from '../patreon-users/patreon-users.service';
 import { UpdatePatreonUserDto } from '../patreon-users/dto/update-patreon-user.dto';
 import { AxiosResponse } from 'axios';
+import { DiscordRestService } from '../discord-rest/discord-rest.service';
 
 @Injectable()
 export class AuthService {
-  private readonly discordBotRestClient: REST;
   private readonly logger = new Logger(AuthService.name);
 
   constructor(
     private readonly usersService: UsersService,
     private readonly discordUsersService: DiscordUsersService,
     private readonly patreonUsersService: PatreonUsersService,
+    private readonly discordRestService: DiscordRestService,
     private readonly entityManager: EntityManager,
     private readonly http: HttpService,
   ) {
     this.logger.debug(`Creating default Discord API REST client…`);
-    this.discordBotRestClient = this.createDiscordRestClient(
-      serverEnv.DISCORD_BOT_TOKEN,
-    );
-  }
-
-  private createDiscordRestClient(token: string) {
-    this.logger.debug(`Creating Discord API REST client…`);
-    return new REST({
-      version: '10',
-      userAgentAppendix: serverEnv.UA_STRING,
-    }).setToken(token);
   }
 
   getDiscordUserInfo(params: { userId?: string; accessToken?: string }) {
     this.logger.debug(`Getting Discord API REST client…`);
     const effectiveClient = params.accessToken
-      ? this.createDiscordRestClient(params.accessToken)
-      : this.discordBotRestClient;
+      ? this.discordRestService.clientFactory(params.accessToken)
+      : this.discordRestService.defaultClient;
     this.logger.debug(
       `Retrieving Discord user info ${
         params.accessToken ? 'via access token' : `for user ID ${params.userId}`

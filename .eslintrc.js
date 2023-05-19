@@ -23,6 +23,7 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'import/no-cycle': 'error',
+    'prettier/prettier': 'warn',
   },
   settings: {
     'import/resolver': {

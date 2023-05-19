@@ -7,6 +7,7 @@ config({ path: join(process.cwd(), '.env') });
 const {
   PORT,
   LOCAL,
+  LOG_LEVEL,
   DATABASE_HOST,
   DATABASE_PORT,
   DATABASE_USER,
@@ -33,8 +34,9 @@ const {
  */
 export const serverEnv = (() => {
   const values = {
-    LOCAL: LOCAL === 'true',
     PORT: PORT || 3000,
+    LOCAL: LOCAL === 'true',
+    LOG_LEVEL,
     DATABASE_HOST,
     DATABASE_PORT: DATABASE_PORT ? parseInt(DATABASE_PORT) : undefined,
     DATABASE_USER,

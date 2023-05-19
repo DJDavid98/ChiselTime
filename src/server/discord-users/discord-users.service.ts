@@ -25,7 +25,7 @@ export class DiscordUsersService {
   }
 
   async delete(id: string) {
-    await this.entityManager.delete(DiscordUser, { where: { id } });
+    await this.entityManager.delete(DiscordUser, { id });
   }
 
   async update(

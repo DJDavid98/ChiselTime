@@ -26,7 +26,7 @@ export class PatreonUsersService {
   }
 
   async delete(id: string) {
-    await this.entityManager.delete(PatreonUser, { where: { id } });
+    await this.entityManager.delete(PatreonUser, { id });
   }
 
   async update(

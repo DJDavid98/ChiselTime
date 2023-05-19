@@ -8,11 +8,6 @@ import { getRandomUuid } from './utils/random';
 import { BullModule } from '@nestjs/bull';
 import { serverEnv } from './server-env';
 import { ScheduleModule } from '@nestjs/schedule';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
-import { DiscordUsersModule } from './discord-users/discord-users.module';
-import { PatreonUsersModule } from './patreon-users/patreon-users.module';
-import { MessageTemplatesModule } from './message-templates/message-templates.module';
 
 const imports = [
   ConfigModule.forRoot(),
@@ -34,7 +29,7 @@ const imports = [
         res.setHeader('X-Correlation-Id', id);
         return id;
       },
-      level: 'debug',
+      level: serverEnv.LOG_LEVEL,
       transport:
         process.env.NODE_ENV !== 'production'
           ? {
@@ -58,15 +53,9 @@ const imports = [
     },
   }),
   ScheduleModule.forRoot(),
-  UsersModule,
-  AuthModule,
-  DiscordUsersModule,
-  PatreonUsersModule,
-  MessageTemplatesModule,
 ];
 
 @Module({
   imports,
-  exports: imports,
 })
 export class SharedModule {}

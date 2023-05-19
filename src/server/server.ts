@@ -15,6 +15,16 @@ import { Logger } from 'nestjs-pino';
   );
   const manager = new ShardingManager(botScriptPath, {
     token: serverEnv.DISCORD_BOT_TOKEN,
+    /**
+     * The library used for integrating Discord with NestJS doesn't fully
+     * support sharding, as application commands are recreated by each shard.
+     *
+     * For now, this value is forced to 1 to avoid the potential issues this
+     * can cause
+     *
+     * TODO Replace library with https://necord.org/
+     */
+    totalShards: 1,
   });
 
   manager.spawn();
