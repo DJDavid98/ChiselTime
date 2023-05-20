@@ -34,6 +34,7 @@ const {
   DISCORD_BOT_ENABLED,
   PATREON_CLIENT_ID,
   PATREON_CLIENT_SECRET,
+  npm_lifecycle_script,
 } = process.env;
 
 /**
@@ -43,6 +44,8 @@ export const serverEnv = (() => {
   const values = {
     PORT: PORT || 3000,
     LOCAL: LOCAL === 'true',
+    // Detects watch mode when running `npm run start:dev`
+    WATCH_MODE: npm_lifecycle_script?.includes('--watch') ?? false,
     LOG_LEVEL,
     DATABASE_HOST,
     DATABASE_PORT: int(DATABASE_PORT),

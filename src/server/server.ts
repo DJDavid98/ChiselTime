@@ -8,8 +8,14 @@ import { Logger } from 'nestjs-pino';
   const app = await bootstrap();
   const logger = app.get(Logger);
 
-  if (!serverEnv.DISCORD_BOT_ENABLED) {
-    logger.warn('Discord bot is disabled via ENV config, skipping bot startup');
+  // Starting the bot in watch mode can result in hitting Discord API rate
+  // limits when changes are made to the code rapidly which restart the server
+  if (serverEnv.WATCH_MODE || !serverEnv.DISCORD_BOT_ENABLED) {
+    logger.warn(
+      `Discord bot is disabled ${
+        serverEnv.WATCH_MODE ? 'due to watch mode' : 'via environment config'
+      }, skipping bot startup`,
+    );
     return;
   }
 
