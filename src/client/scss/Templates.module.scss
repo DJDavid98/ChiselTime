@@ -1,0 +1,14 @@
+@use 'common';
+@use 'vars';
+
+.layout {
+  @include common.layout();
+}
+
+.list {
+  margin: 0;
+}
+
+.error {
+  color: vars.$error
+}

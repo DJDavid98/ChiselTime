@@ -1,11 +1,10 @@
 'use client';
 
-import styles from '../scss/UserInfo.module.scss';
+import styles from '../../scss/UserInfo.module.scss';
 import { FC, useMemo } from 'react';
-import useSWR from 'swr';
-import type { UserInfoDto } from '../../server/users/dto/user-info.dto';
-import { UserAvatar } from './UserAvatar';
-import { LoadingIndicator } from './LoadingIndicator';
+import { UserAvatar } from '../common/UserAvatar';
+import { LoadingIndicator } from '../common/LoadingIndicator';
+import { useUserInfo } from '../../hooks/useUserInfo';
 
 interface TierData {
   className?: string;
@@ -14,19 +13,7 @@ interface TierData {
 }
 
 export const UserInfo: FC = () => {
-  const result = useSWR(
-    '/users/me',
-    (key) =>
-      fetch(key).then<UserInfoDto>((r) =>
-        r.ok ? r.json() : Promise.reject(r),
-      ),
-    {
-      refreshInterval: 10e3,
-      refreshWhenHidden: false,
-      errorRetryCount: 3,
-      keepPreviousData: true,
-    },
-  );
+  const result = useUserInfo();
 
   const tierData: TierData = useMemo(() => {
     if (

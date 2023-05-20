@@ -1,4 +1,4 @@
-import styles from '../scss/LoadingIndicator.module.scss';
+import styles from '../../scss/LoadingIndicator.module.scss';
 import { CSSProperties, FC, useMemo } from 'react';
 
 interface LoadingIndicatorProps {
@@ -18,7 +18,6 @@ export const LoadingIndicator: FC<LoadingIndicatorProps> = ({ size = 32 }) => {
       viewBox="0 0 64 64"
       style={style}
     >
-      <circle cx="32" cy="32" r="29" className={styles.face} />
       <path
         d="M35 32a3.001 3.001 0 0 1-6 0l3-26.074L35 32Z"
         className={styles.minute}
@@ -27,7 +26,10 @@ export const LoadingIndicator: FC<LoadingIndicatorProps> = ({ size = 32 }) => {
         d="M35 32a3.001 3.001 0 0 1-6 0l3-13.037L35 32Z"
         className={styles.hour}
       />
-      <path d="M32 3v7m0 44v7m22-29h7M3 32h7" className={styles.ticking} />
+      <g className={styles.base}>
+        <circle cx="32" cy="32" r="29" className={styles.face} />
+        <path d="M32 3v7m0 44v7m22-29h7M3 32h7" className={styles.ticking} />
+      </g>
     </svg>
   );
 };

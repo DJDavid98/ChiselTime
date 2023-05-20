@@ -6,7 +6,6 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  user-select: none;
 
   h1 {
     display: flex;
@@ -16,6 +15,7 @@
     font-size: 3rem;
     line-height: 1em;
     margin-bottom: 1rem;
+    user-select: none;
 
     img {
       width: 1em;

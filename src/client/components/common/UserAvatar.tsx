@@ -1,8 +1,8 @@
 import { FC, memo, useMemo } from 'react';
-import { UserInfoDto } from '../../server/users/dto/user-info.dto';
-import styles from '../scss/UserAvatar.module.scss';
+import { UserInfoDto } from '../../../server/users/dto/user-info.dto';
+import styles from '../../scss/UserAvatar.module.scss';
 import { LoadingIndicator } from './LoadingIndicator';
-import { usePreloadedImage } from '../hooks/usePreloadedImage';
+import { usePreloadedImage } from '../../hooks/usePreloadedImage';
 
 const UserAvatarComponent: FC<{ userData: UserInfoDto }> = ({ userData }) => {
   const avatarUrl: string | undefined = useMemo(() => {

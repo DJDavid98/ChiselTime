@@ -25,10 +25,13 @@ $full-revolution-time: 5s;
     animation-duration: calc($full-revolution-time / 12);
   }
 
+  .base {
+    opacity: .8;
+  }
+
   .face, .ticking {
     fill: none;
     stroke: currentColor;
-    opacity: .8;
   }
 
   .face {

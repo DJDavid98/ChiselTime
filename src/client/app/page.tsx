@@ -6,10 +6,11 @@ import Image from 'next/image';
 import { SITE_TITLE } from '../config';
 import { clientEnv } from '../client-env';
 import { publicAssetPath } from '../utils/public-asset-path';
-import { UserInfo } from '../components/UserInfo';
+import { UserInfo } from '../components/shell/UserInfo';
+import { TemplateList } from '../components/templates/TemplateList';
 
 const openGraph: Metadata['openGraph'] = {
-  title: 'ChiselTime',
+  title: SITE_TITLE,
   description:
     'An application that helps with automating Discord message updates',
   images: publicAssetPath('/social.png'),
@@ -37,9 +38,9 @@ const Page: NextPage = () => {
             height={120}
             alt={`${SITE_TITLE} logo`}
           />
-          <span>ChiselTime</span>
+          <span>{SITE_TITLE}</span>
         </h1>
-        <p>Coming soon…</p>
+        <TemplateList />
       </div>
       <UserInfo />
     </Fragment>

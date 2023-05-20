@@ -7,6 +7,7 @@ export class UserInfoDto {
   name: string;
   discordUsers: DiscordUserInfoDto[];
   patreonUsers: PatreonUserInfoDto[];
+  maxTemplates: number;
 
   static from(user: User): UserInfoDto {
     const dto = new UserInfoDto();
@@ -20,6 +21,7 @@ export class UserInfoDto {
         du.patreonUser ? [...pu, PatreonUserInfoDto.from(du.patreonUser)] : pu,
       [] as PatreonUserInfoDto[],
     );
+    dto.maxTemplates = user.getMaxTemplateCount();
     return dto;
   }
 }

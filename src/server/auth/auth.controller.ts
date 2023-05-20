@@ -47,6 +47,12 @@ export class AuthController {
     res.status(HttpStatus.TEMPORARY_REDIRECT).redirect('/');
   }
 
+  @Get('add-bot')
+  @UseGuards(AuthGuard('discord-bot'))
+  async addBot(@Req() req: Request, @Res() res: Response) {
+    res.status(HttpStatus.TEMPORARY_REDIRECT).redirect('/');
+  }
+
   @Get('patreon')
   @UseGuards(AuthGuard('patreon'))
   @Redirect('/', HttpStatus.TEMPORARY_REDIRECT)

@@ -1,4 +1,4 @@
-import { RouterTransition } from '../components/RouterTransition';
+import { RouterTransition } from '../components/shell/RouterTransition';
 import React, { FC, PropsWithChildren } from 'react';
 import '../app.scss';
 

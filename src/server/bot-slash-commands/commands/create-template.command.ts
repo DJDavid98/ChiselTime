@@ -5,11 +5,10 @@ import {
   TextChannel,
 } from 'discord.js';
 import { Command, Handler } from '@discord-nestjs/core';
-import { EntityManager } from 'typeorm';
-import { DiscordUser } from '../../discord-users/entities/discord-user.entity';
-import { MessageTemplate } from '../../message-templates/entities/message-template.entity';
 import { replaceIntervalsInString } from '../../utils/interval-parsing';
-import { CreateMessageTemplateDto } from '../../message-templates/dto/create-message-template.dto';
+import { MessageTemplatesService } from '../../message-templates/message-templates.service';
+import { DiscordUsersService } from '../../discord-users/discord-users.service';
+import { getReadableInterval } from '../../../client/utils/get-readable-interval';
 
 @Command({
   name: 'Create Template',
@@ -17,7 +16,10 @@ import { CreateMessageTemplateDto } from '../../message-templates/dto/create-mes
   defaultMemberPermissions: PermissionFlagsBits.ManageMessages,
 })
 export class CreateTemplateCommand {
-  constructor(private readonly entityManager: EntityManager) {}
+  constructor(
+    private readonly discordUsersService: DiscordUsersService,
+    private readonly messageTemplatesService: MessageTemplatesService,
+  ) {}
 
   @Handler()
   async handler(
@@ -40,9 +42,9 @@ export class CreateTemplateCommand {
       return;
     }
 
-    const discordUser = await this.entityManager.findOne(DiscordUser, {
-      where: { id: interaction.user.id },
-    });
+    const discordUser = await this.discordUsersService.findOne(
+      interaction.user.id,
+    );
     if (!discordUser) {
       await interaction.reply({
         content: 'Could not find Discord user in the database',
@@ -51,8 +53,8 @@ export class CreateTemplateCommand {
       return;
     }
 
-    const userTemplates = await this.entityManager.find(MessageTemplate, {
-      where: { author: { id: discordUser.id } },
+    const userTemplates = await this.messageTemplatesService.findAll({
+      discordUserIds: [discordUser.id],
     });
     const localUser = await discordUser.user;
     const maxTemplateCount = localUser.getMaxTemplateCount();
@@ -69,12 +71,10 @@ export class CreateTemplateCommand {
       return;
     }
 
-    const existingTemplate = await this.entityManager.findOne(MessageTemplate, {
-      where: {
-        channelId: message.channelId,
-        messageId: message.id,
-      },
-    });
+    const existingTemplate = await this.messageTemplatesService.findExisting(
+      message.channelId,
+      message.id,
+    );
     if (existingTemplate) {
       await interaction.reply({
         content: [
@@ -91,21 +91,22 @@ export class CreateTemplateCommand {
       content: replaceIntervalsInString(message.content),
     });
 
-    let templateMessage = this.entityManager.create<MessageTemplate>(
-      MessageTemplate,
-      {
-        author: discordUser,
-        body: templateContent,
-        updateFrequency: 'P1M',
-        serverId: channelMessage.guildId,
-        channelId: channelMessage.channelId,
-        messageId: channelMessage.id,
-      } satisfies CreateMessageTemplateDto,
-    );
-    templateMessage = await this.entityManager.save(templateMessage);
+    const templateMessage = await this.messageTemplatesService.create({
+      author: discordUser,
+      body: templateContent,
+      updateFrequency: 'P1D',
+      serverId: channelMessage.guildId,
+      channelId: channelMessage.channelId,
+      messageId: channelMessage.id,
+    });
 
+    const readableUpdateFrequency = getReadableInterval(
+      templateMessage.updateFrequency,
+    );
     await interaction.reply({
-      content: `Template \`${templateMessage.id}\` created successfully with an update frequency of \`${templateMessage.updateFrequency}\``,
+      content: [
+        `Template \`${templateMessage.id}\` created successfully. The message will update ${readableUpdateFrequency}`,
+      ].join('\n'),
       ephemeral: true,
     });
   }

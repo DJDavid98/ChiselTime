@@ -11,6 +11,7 @@ import { PatreonUsersModule } from '../patreon-users/patreon-users.module';
 import { PatreonStrategy } from './strategies/patreon.strategy';
 import { DiscordRestModule } from '../discord-rest/discord-rest.module';
 import { SessionUserGuard } from './guards/session-user.guard';
+import { DiscordBotStrategy } from './strategies/discord-bot.strategy';
 
 @Module({
   imports: [
@@ -23,6 +24,12 @@ import { SessionUserGuard } from './guards/session-user.guard';
     DiscordRestModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, DiscordStrategy, PatreonStrategy, SessionUserGuard],
+  providers: [
+    AuthService,
+    DiscordStrategy,
+    DiscordBotStrategy,
+    PatreonStrategy,
+    SessionUserGuard,
+  ],
 })
 export class AuthModule {}

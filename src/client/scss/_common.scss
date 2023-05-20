@@ -1,0 +1,27 @@
+@mixin layout {
+  --margin: .5rem;
+  padding: 1rem;
+  background-color: #431;
+  border-radius: .5rem;
+  text-align: left;
+  width: calc(100% - var(--margin) * 2);
+  max-width: 1200px;
+  margin: var(--margin);
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: stretch;
+
+  h2 {
+    text-align: center;
+    padding: 0 var(--margin) var(--margin);
+    margin: 0 0 calc(var(--margin) * 5);
+    border-bottom: .125em solid;
+    align-self: center;
+    text-shadow: 0 .125em .125em rgba(0, 0, 0, .25);
+  }
+
+  .lead {
+    text-align: center;
+    margin: calc(var(--margin) * -3) 0 calc(var(--margin) * 5);
+  }
+}

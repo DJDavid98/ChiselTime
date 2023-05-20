@@ -1,0 +1,27 @@
+.template {
+  &:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+
+  .meta {
+    .metadata {
+      display: inline-block;
+      flex: 0 1 auto;
+      margin: 0 .5rem .5rem 0;
+    }
+  }
+
+  .id {
+    font-size: 1rem;
+    font-family: monospace;
+    user-select: all;
+  }
+
+  .body {
+    background-color: #313338;
+    color: #dbdee1;
+    padding: .5rem;
+    white-space: pre-wrap;
+    border-radius: .125rem;
+  }
+}

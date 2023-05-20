@@ -1,22 +1,22 @@
-import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, Logger } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-oauth2';
-import { serverEnv } from '../../server-env';
+import { AppUserValidator } from '../../common/app-user-validator';
 import { HttpService } from '@nestjs/axios';
 import { AuthService } from '../auth.service';
 import { StateService } from '../../state/state.service';
-import { AppUserValidator } from '../../common/app-user-validator';
+import { serverEnv } from '../../server-env';
 import {
   getDiscordOauthStrategy,
   validateDiscordUser,
 } from '../../utils/passport-discord-utils';
 
 @Injectable()
-export class DiscordStrategy
-  extends PassportStrategy(Strategy, 'discord')
+export class DiscordBotStrategy
+  extends PassportStrategy(Strategy, 'discord-bot')
   implements AppUserValidator
 {
-  private readonly logger = new Logger(DiscordStrategy.name);
+  private readonly logger = new Logger(DiscordBotStrategy.name);
 
   constructor(
     private readonly http: HttpService,
@@ -24,7 +24,9 @@ export class DiscordStrategy
     private readonly stateService: StateService,
   ) {
     super(
-      getDiscordOauthStrategy(stateService)(serverEnv.DISCORD_CLIENT_SCOPES),
+      getDiscordOauthStrategy(stateService)(
+        `${serverEnv.DISCORD_CLIENT_SCOPES} bot applications.commands`,
+      ),
     );
   }
 

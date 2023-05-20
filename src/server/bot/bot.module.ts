@@ -5,6 +5,7 @@ import { DiscordModule } from '@discord-nestjs/core';
 import { serverEnv } from '../server-env';
 import { BotGateway } from './bot.gateway';
 import { BotSlashCommandsModule } from '../bot-slash-commands/bot-slash-commands.module';
+import { MessageTemplatesModule } from '../message-templates/message-templates.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { BotSlashCommandsModule } from '../bot-slash-commands/bot-slash-commands
         ],
       }),
     }),
+    MessageTemplatesModule,
     BotSlashCommandsModule,
   ],
   providers: [BotGateway],
