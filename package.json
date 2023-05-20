@@ -9,7 +9,7 @@
     "build:server": "nest build",
     "build:client": "cd src/client && next build",
     "build": "concurrently -p name -g \"npm:build:*\"",
-    "format": "prettier --write \"src/**/*.ts\" \"src/client/**/*.tsx\" \"test/**/*.ts\"",
+    "format": "prettier --write \"./**/*.ts\" \"./**/*.tsx\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
