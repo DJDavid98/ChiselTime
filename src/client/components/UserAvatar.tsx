@@ -1,6 +1,8 @@
 import { FC, memo, useMemo } from 'react';
 import { UserInfoDto } from '../../server/users/dto/user-info.dto';
 import styles from '../scss/UserAvatar.module.scss';
+import { LoadingIndicator } from './LoadingIndicator';
+import { usePreloadedImage } from '../hooks/usePreloadedImage';
 
 const UserAvatarComponent: FC<{ userData: UserInfoDto }> = ({ userData }) => {
   const avatarUrl: string | undefined = useMemo(() => {
@@ -18,10 +20,16 @@ const UserAvatarComponent: FC<{ userData: UserInfoDto }> = ({ userData }) => {
     }
   }, [userData.discordUsers, userData.patreonUsers]);
 
-  if (!avatarUrl) return null;
+  const { src, loading } = usePreloadedImage(avatarUrl);
 
-  // eslint-disable-next-line @next/next/no-img-element
-  return <img src={avatarUrl} alt="avatar image" className={styles.avatar} />;
+  if (loading) return <LoadingIndicator />;
+
+  if (!src) return null;
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt="avatar image" className={styles.avatar} />
+  );
 };
 
 export const UserAvatar = memo(UserAvatarComponent);

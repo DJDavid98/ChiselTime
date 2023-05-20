@@ -5,6 +5,7 @@ import { FC, useMemo } from 'react';
 import useSWR from 'swr';
 import type { UserInfoDto } from '../../server/users/dto/user-info.dto';
 import { UserAvatar } from './UserAvatar';
+import { LoadingIndicator } from './LoadingIndicator';
 
 interface TierData {
   className?: string;
@@ -23,6 +24,7 @@ export const UserInfo: FC = () => {
       refreshInterval: 10e3,
       refreshWhenHidden: false,
       errorRetryCount: 3,
+      keepPreviousData: true,
     },
   );
 
@@ -67,7 +69,9 @@ export const UserInfo: FC = () => {
             <button>Logout</button>
           </form>
         </>
-      ) : result.isLoading ? null : (
+      ) : result.isLoading ? (
+        <LoadingIndicator />
+      ) : (
         <a href="/auth/login/discord">Login</a>
       )}
     </div>
