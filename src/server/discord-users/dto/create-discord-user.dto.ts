@@ -10,7 +10,8 @@ export const createDiscordUserSchema = Joi.object({
 export class CreateDiscordUserDto {
   id: string;
   name: string;
-  discriminator: string;
+  displayName: string | null;
+  discriminator: number;
   avatar: string | null;
   accessToken?: string | null;
   refreshToken?: string | null;

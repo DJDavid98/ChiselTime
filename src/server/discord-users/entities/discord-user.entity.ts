@@ -33,8 +33,15 @@ export class DiscordUser {
   @Column('character varying', { length: 32 })
   name: string;
 
-  @Column('char', { length: 4 })
-  discriminator: string;
+  @Column('character varying', { length: 32, nullable: true })
+  displayName: string | null;
+
+  /**
+   * Soon this field will be retired in favor of display names
+   * @deprecated
+   */
+  @Column('smallint')
+  discriminator: number;
 
   @Column('character varying', { length: 64, nullable: true })
   avatar: string | null;

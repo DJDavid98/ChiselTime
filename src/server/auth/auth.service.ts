@@ -65,7 +65,11 @@ export class AuthService {
       {
         id: apiUserInfo.id,
         name: apiUserInfo.username,
-        discriminator: apiUserInfo.discriminator,
+        displayName:
+          'global_name' in apiUserInfo
+            ? (apiUserInfo.global_name as string)
+            : null,
+        discriminator: parseInt(apiUserInfo.discriminator, 10),
         avatar: apiUserInfo.avatar,
         accessToken: options.accessToken ?? null,
         refreshToken: options.refreshToken ?? null,
@@ -118,7 +122,11 @@ export class AuthService {
     this.logger.debug(`Updating Discord user (${discordUser.id})…`);
     return await this.discordUsersService.update(discordUser, {
       name: apiUserInfo.username,
-      discriminator: apiUserInfo.discriminator,
+      displayName:
+        'global_name' in apiUserInfo
+          ? (apiUserInfo.global_name as string)
+          : null,
+      discriminator: parseInt(apiUserInfo.discriminator, 10),
       avatar: apiUserInfo.avatar,
       accessToken: options.accessToken ?? null,
       refreshToken: options.refreshToken ?? null,
@@ -208,7 +216,8 @@ export class AuthService {
             {
               id: discordUserId,
               name: `Patreon#${patreonUser.id}`,
-              discriminator: '0000',
+              displayName: null,
+              discriminator: 0,
               avatar: null,
             },
             false,
