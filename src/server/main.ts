@@ -8,6 +8,7 @@ import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 import session from 'express-session';
 import { retrieveSessionSecret } from './utils/retrieve-session-secret';
 import { retrieveSessionStore } from './utils/retrieve-session-store';
+import { Temporal } from '@js-temporal/polyfill';
 
 export async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -27,6 +28,7 @@ export async function bootstrap() {
         httpOnly: true,
         secure: serverEnv.SESSION_COOKIE_SECURE,
         sameSite: true,
+        maxAge: Temporal.Duration.from({ days: 7 }).total('millisecond'),
       },
       store: await retrieveSessionStore(logger),
     }),
