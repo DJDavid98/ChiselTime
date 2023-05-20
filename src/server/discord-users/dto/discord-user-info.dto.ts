@@ -10,7 +10,9 @@ export class DiscordUserInfoDto {
   static from(du: DiscordUser): DiscordUserInfoDto {
     const dto = new DiscordUserInfoDto();
     dto.id = du.id;
-    dto.name = du.displayName ?? `${du.name}#${du.discriminator}`;
+    dto.name =
+      du.displayName ??
+      `${du.name}#${du.discriminator.toString().padStart(4, '0')}`;
     dto.avatarUrl = DiscordUserInfoDto.getAvatarUrl(du);
     return dto;
   }
