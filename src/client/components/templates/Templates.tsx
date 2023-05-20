@@ -27,15 +27,22 @@ export const Templates: FC<TemplatesProps> = ({ userId, maxCount }) => {
         &ldquo;Create Template&rdquo; context menu command of the ChiselTime
         Discord bot.
         <br />
+        <a href="/auth/add-bot">Add the bot to your server</a> to start creating
+        templates.
+        <br />
         <br />
         The maximum number of templates you can have at a time is controlled by
-        your Patreon support level. Higher tiers enable you to create more
-        templates as well as access additional update frequency options.
+        your Patreon support level.
+        <br />
+        Higher tiers enable you to create more templates as well as access
+        additional update frequency options.
       </p>
       {templateData.error ? (
         <p className={styles.error}>
           Failed to load templates ({String(templateData.error.status)})
         </p>
+      ) : templateData.data.templates.length === 0 ? (
+        <p className={styles.info}>You don&lsquo;t have any templates yet.</p>
       ) : (
         <ol className={styles.list}>
           {templateData.data.templates.map((t) => (

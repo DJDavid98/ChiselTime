@@ -1,23 +1,28 @@
 import { AuthService } from '../auth/auth.service';
 import { Logger } from '@nestjs/common';
 import { serverEnv } from '../server-env';
-import { publicPath } from './public-path';
 import { StateService } from '../state/state.service';
+import { StrategyOptions } from 'passport-oauth2';
+import { publicPath } from './public-path';
 
-export const getDiscordOauthStrategy =
-  (stateService: StateService) => (scope: string) => ({
-    authorizationURL:
-      'https://discordapp.com/api/oauth2/authorize?propmt=none&permissions=0',
+export const getDiscordOauthStrategyFactory =
+  (stateService: StateService) =>
+  (addBot = false): StrategyOptions => ({
+    authorizationURL: `https://discordapp.com/api/oauth2/authorize?${
+      addBot ? 'permissions=0' : 'propmt=none'
+    }`,
     tokenURL: 'https://discordapp.com/api/oauth2/token',
     clientID: serverEnv.DISCORD_CLIENT_ID,
     clientSecret: serverEnv.DISCORD_CLIENT_SECRET,
     callbackURL: publicPath('/auth/discord'),
-    scope,
+    scope: `${serverEnv.DISCORD_CLIENT_SCOPES}${
+      addBot ? ` bot applications.commands` : ''
+    }`,
     state: true,
     store: stateService,
   });
 
-export const validateDiscordUser =
+export const discordUserValidatorFactory =
   (authService: AuthService, logger: Logger) =>
   async (accessToken: string, refreshToken: string) => {
     logger.debug('Validating Discord access token…');

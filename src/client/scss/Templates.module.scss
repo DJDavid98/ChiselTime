@@ -9,6 +9,15 @@
   margin: 0;
 }
 
+.error, .info {
+  text-align: center;
+  font-size: 1.1rem;
+}
+
 .error {
-  color: vars.$error
+  color: vars.$error;
+}
+
+.info {
+  color: vars.$info;
 }

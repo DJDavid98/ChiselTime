@@ -12,4 +12,10 @@ body {
   background-color: #000;
   background-image: linear-gradient(165deg, $bg-gradient-start 0%, $bg-gradient-mid 50%, $bg-gradient-end 100%);
   color: $primary;
+
+  a {
+    &, &:hover {
+      color: inherit;
+    }
+  }
 }

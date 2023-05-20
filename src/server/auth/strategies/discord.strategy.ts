@@ -1,14 +1,13 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, Logger } from '@nestjs/common';
 import { Strategy } from 'passport-oauth2';
-import { serverEnv } from '../../server-env';
 import { HttpService } from '@nestjs/axios';
 import { AuthService } from '../auth.service';
 import { StateService } from '../../state/state.service';
 import { AppUserValidator } from '../../common/app-user-validator';
 import {
-  getDiscordOauthStrategy,
-  validateDiscordUser,
+  discordUserValidatorFactory,
+  getDiscordOauthStrategyFactory,
 } from '../../utils/passport-discord-utils';
 
 @Injectable()
@@ -23,15 +22,16 @@ export class DiscordStrategy
     private readonly authService: AuthService,
     private readonly stateService: StateService,
   ) {
-    super(
-      getDiscordOauthStrategy(stateService)(serverEnv.DISCORD_CLIENT_SCOPES),
-    );
+    const getDiscordOauthStrategy =
+      getDiscordOauthStrategyFactory(stateService);
+    super(getDiscordOauthStrategy());
   }
 
   async validate(accessToken: string, refreshToken: string) {
-    return validateDiscordUser(this.authService, this.logger)(
-      accessToken,
-      refreshToken,
+    const discordUserValidator = discordUserValidatorFactory(
+      this.authService,
+      this.logger,
     );
+    return discordUserValidator(accessToken, refreshToken);
   }
 }

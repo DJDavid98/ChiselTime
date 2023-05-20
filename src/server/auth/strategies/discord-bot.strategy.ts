@@ -5,10 +5,9 @@ import { AppUserValidator } from '../../common/app-user-validator';
 import { HttpService } from '@nestjs/axios';
 import { AuthService } from '../auth.service';
 import { StateService } from '../../state/state.service';
-import { serverEnv } from '../../server-env';
 import {
-  getDiscordOauthStrategy,
-  validateDiscordUser,
+  discordUserValidatorFactory,
+  getDiscordOauthStrategyFactory,
 } from '../../utils/passport-discord-utils';
 
 @Injectable()
@@ -23,17 +22,16 @@ export class DiscordBotStrategy
     private readonly authService: AuthService,
     private readonly stateService: StateService,
   ) {
-    super(
-      getDiscordOauthStrategy(stateService)(
-        `${serverEnv.DISCORD_CLIENT_SCOPES} bot applications.commands`,
-      ),
-    );
+    const getDiscordOauthStrategy =
+      getDiscordOauthStrategyFactory(stateService);
+    super(getDiscordOauthStrategy(true));
   }
 
   async validate(accessToken: string, refreshToken: string) {
-    return validateDiscordUser(this.authService, this.logger)(
-      accessToken,
-      refreshToken,
+    const discordUserValidator = discordUserValidatorFactory(
+      this.authService,
+      this.logger,
     );
+    return discordUserValidator(accessToken, refreshToken);
   }
 }
