@@ -11,6 +11,7 @@ import { DiscordUsersModule } from './discord-users/discord-users.module';
 import { PatreonUsersModule } from './patreon-users/patreon-users.module';
 import { MessageTemplatesModule } from './message-templates/message-templates.module';
 import { DiscordRestModule } from './discord-rest/discord-rest.module';
+import { UserSettingsModule } from './user-settings/user-settings.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { DiscordRestModule } from './discord-rest/discord-rest.module';
     StateModule,
     UsersModule,
     ViewModule,
+    UserSettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
