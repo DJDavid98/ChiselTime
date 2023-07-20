@@ -43,7 +43,7 @@ export class MessageTemplate {
   @ManyToOne(
     'DiscordUser',
     (discordUser: DiscordUser) => discordUser.messageTemplates,
-    { eager: true },
+    { eager: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
   author: DiscordUser;
 

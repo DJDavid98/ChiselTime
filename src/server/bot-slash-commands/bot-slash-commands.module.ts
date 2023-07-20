@@ -8,6 +8,9 @@ import { DiscordUsersModule } from '../discord-users/discord-users.module';
 import { UserSettingsModule } from '../user-settings/user-settings.module';
 import { SettingCommand } from './commands/setting.command';
 import { DiscordModule } from '@discord-nestjs/core';
+import { TimezoneSettingCommand } from './commands/setting/timezone-setting.command';
+import { ListSettingCommand } from './commands/setting/list-setting.command';
+import { EphemeralSettingCommand } from './commands/setting/ephemeral-setting.command';
 
 @Module({
   imports: [
@@ -22,6 +25,9 @@ import { DiscordModule } from '@discord-nestjs/core';
     CreateTemplateCommand,
     DeleteTemplateCommand,
     SettingCommand,
+    TimezoneSettingCommand,
+    ListSettingCommand,
+    EphemeralSettingCommand,
   ],
 })
 export class BotSlashCommandsModule {}

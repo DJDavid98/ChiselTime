@@ -11,6 +11,7 @@ import {
 import type { User } from '../../users/entities/user.entity';
 import type { PatreonUser } from '../../patreon-users/entities/patreon-user.entity';
 import { MessageTemplate } from '../../message-templates/entities/message-template.entity';
+import { UserSetting } from '../../user-settings/entities/user-setting.entity';
 
 @Entity('discord_users')
 export class DiscordUser {
@@ -71,7 +72,11 @@ export class DiscordUser {
   @OneToMany(
     'MessageTemplate',
     (messageTemplate: MessageTemplate) => messageTemplate.author,
-    { onDelete: 'CASCADE', onUpdate: 'CASCADE' },
   )
-  messageTemplates: MessageTemplate[];
+  messageTemplates: Promise<MessageTemplate[]>;
+
+  @OneToMany('UserSetting', (userSetting: UserSetting) => userSetting.user, {
+    eager: true,
+  })
+  settings: UserSetting[];
 }

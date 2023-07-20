@@ -1,12 +1,16 @@
 import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
-import type { User } from '../../users/entities/user.entity';
+import type { DiscordUser } from '../../discord-users/entities/discord-user.entity';
+import { isValidTimeZone } from '../../utils/timezone';
 
-export enum KnownSettings {
-  timezone = 'timezone',
-}
+export const KnownSettings = {
+  timezone: 'timezone',
+  ephemeral: 'ephemeral',
+} as const;
+export type KnownSettings = (typeof KnownSettings)[keyof typeof KnownSettings];
 
 export interface SettingTypes {
   [KnownSettings.timezone]: string;
+  [KnownSettings.ephemeral]: boolean;
 }
 
 export const settingsTypeGuards: {
@@ -14,6 +18,17 @@ export const settingsTypeGuards: {
 } = {
   [KnownSettings.timezone]: (value): value is string =>
     typeof value === 'string',
+  [KnownSettings.ephemeral]: (value): value is boolean =>
+    typeof value === 'boolean',
+};
+
+export const settingsParser: {
+  [k in KnownSettings]: (value: unknown) => SettingTypes[k] | null;
+} = {
+  [KnownSettings.timezone]: (value) =>
+    typeof value === 'string' && isValidTimeZone(value) ? value : null,
+  [KnownSettings.ephemeral]: (value) =>
+    typeof value === 'boolean' ? value : null,
 };
 
 export const USER_SETTINGS_SETTING_MAX_LENGTH = 64;
@@ -23,13 +38,20 @@ export class UserSetting<Setting extends string = string> {
   @PrimaryColumn('uuid', { generated: 'uuid' })
   id: string;
 
-  @ManyToOne('User', (user: User) => user.settings)
-  user: Promise<User>;
+  @ManyToOne('DiscordUser', (user: DiscordUser) => user.settings, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    nullable: false,
+  })
+  user: Promise<DiscordUser> | DiscordUser;
 
-  @Column('character varying', { length: USER_SETTINGS_SETTING_MAX_LENGTH })
+  @Column('character varying', {
+    length: USER_SETTINGS_SETTING_MAX_LENGTH,
+    nullable: false,
+  })
   setting: Setting;
 
-  @Column('json')
+  @Column('json', { nullable: false })
   value: string;
 
   static getDecodedValue<

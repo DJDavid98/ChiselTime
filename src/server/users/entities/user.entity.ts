@@ -8,7 +8,6 @@ import {
 } from 'typeorm';
 import { USER_NAME_MAX_LENGTH } from '../dto/create-user.dto';
 import type { DiscordUser } from '../../discord-users/entities/discord-user.entity';
-import type { UserSetting } from '../../user-settings/entities/user-setting.entity';
 
 @Entity('users')
 export class User {
@@ -32,11 +31,6 @@ export class User {
     eager: true,
   })
   discordUsers: DiscordUser[];
-
-  @OneToMany('UserSetting', (userSetting: UserSetting) => userSetting.user, {
-    eager: true,
-  })
-  settings: UserSetting[];
 
   getMaxTemplateCount(): number {
     // TODO Provide this based on Patreon subscription tier

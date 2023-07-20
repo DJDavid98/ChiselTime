@@ -3,11 +3,12 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   KnownSettings,
+  settingsParser,
   settingsTypeGuards,
   SettingTypes,
   UserSetting,
 } from './entities/user-setting.entity';
-import { User } from '../users/entities/user.entity';
+import { DiscordUser } from '../discord-users/entities/discord-user.entity';
 
 @Injectable()
 export class UserSettingsService {
@@ -16,8 +17,14 @@ export class UserSettingsService {
     private readonly userSettingsRepository: Repository<UserSetting>,
   ) {}
 
+  async findAll(user: DiscordUser | string) {
+    return await this.userSettingsRepository.findBy({
+      user: { id: typeof user === 'string' ? user : user.id },
+    });
+  }
+
   async getSetting<Setting extends KnownSettings>(
-    user: User | string,
+    user: DiscordUser | string,
     setting: Setting,
   ): Promise<UserSetting<Setting> | null> {
     return (await this.userSettingsRepository.findOneBy({
@@ -27,7 +34,7 @@ export class UserSettingsService {
   }
 
   async getSettingValue<Setting extends KnownSettings>(
-    user: User | string,
+    user: DiscordUser | string,
     setting: Setting,
   ): Promise<SettingTypes[Setting] | null> {
     const record = await this.getSetting<Setting>(user, setting);
@@ -36,7 +43,7 @@ export class UserSettingsService {
   }
 
   async setSetting<Setting extends KnownSettings>(
-    user: User,
+    user: DiscordUser,
     setting: Setting,
     value: unknown,
   ): Promise<UserSetting<Setting>> {
@@ -44,23 +51,31 @@ export class UserSettingsService {
       throw new Error(`Unknown setting ${setting}`);
     }
 
-    if (!settingsTypeGuards[setting](value)) {
+    const parsedValue = settingsParser[setting](value);
+    if (!settingsTypeGuards[setting](parsedValue)) {
       throw new Error(`Setting ${setting} value type mismatch`);
     }
 
     let record = await this.getSetting(user, setting);
     if (record) {
-      const storedValue = UserSetting.getDecodedValue(record);
-      if (value !== storedValue) {
-        record.value = JSON.stringify(value);
-        await this.userSettingsRepository.save(record);
+      if (parsedValue === null) {
+        await this.userSettingsRepository.remove(record);
+      } else {
+        const storedValue = UserSetting.getDecodedValue(record);
+        if (parsedValue !== storedValue) {
+          record.value = JSON.stringify(parsedValue);
+          await this.userSettingsRepository.save(record);
+        }
       }
     } else {
+      debugger;
       record = new UserSetting<Setting>();
-      record.user = Promise.resolve(user);
+      record.user = user;
       record.setting = setting;
-      record.value = value;
-      await this.userSettingsRepository.save(record);
+      record.value = JSON.stringify(parsedValue);
+      if (parsedValue !== null) {
+        await this.userSettingsRepository.save(record);
+      }
     }
 
     return record;

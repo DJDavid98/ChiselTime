@@ -20,6 +20,7 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "preserveWatchOutput": true,
+    "useDefineForClassFields": true,
     "typeRoots": [
       "node_modules/@types",
       "types"
