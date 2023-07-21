@@ -8,7 +8,15 @@ import { getRandomUuid } from './utils/random';
 import { BullModule } from '@nestjs/bull';
 import { serverEnv } from './server-env';
 import { ScheduleModule } from '@nestjs/schedule';
-import { RedisModule, RedisService } from '@liaoliaots/nestjs-redis';
+import { RedisClientOptions, RedisModule } from '@liaoliaots/nestjs-redis';
+
+const redisConfig: RedisClientOptions = {
+  port: serverEnv.REDIS_PORT,
+  host: serverEnv.REDIS_HOST,
+  username: serverEnv.REDIS_USER,
+  password: serverEnv.REDIS_PASS,
+  keyPrefix: serverEnv.REDIS_PREFIX,
+};
 
 const imports = [
   ConfigModule.forRoot(),
@@ -45,36 +53,18 @@ const imports = [
       quietReqLogger: true,
     },
   }),
-  BullModule.forRootAsync({
-    useFactory(redisService: RedisService) {
-      return {
-        createClient: () => redisService.getClient('bull'),
-      };
-    },
-    inject: [RedisService],
+  BullModule.forRoot({
+    redis: redisConfig,
   }),
   ScheduleModule.forRoot(),
   RedisModule.forRoot({
-    config: [
-      {},
-      {
-        namespace: 'bull',
-        keyPrefix: `${serverEnv.REDIS_PREFIX}bull:`,
-        enableReadyCheck: false,
-        maxRetriesPerRequest: null,
-      },
-    ],
+    config: {
+      ...redisConfig,
+      lazyConnect: true,
+    },
     errorLog: true,
     readyLog: true,
     closeClient: true,
-    commonOptions: {
-      port: serverEnv.REDIS_PORT,
-      host: serverEnv.REDIS_HOST,
-      username: serverEnv.REDIS_USER,
-      password: serverEnv.REDIS_PASS,
-      keyPrefix: serverEnv.REDIS_PREFIX,
-      lazyConnect: true,
-    },
   }),
 ];
 
