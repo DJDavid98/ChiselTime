@@ -1,20 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-  KnownSettings,
-  settingsParser,
   settingsTypeGuards,
   SettingTypes,
   UserSetting,
 } from './entities/user-setting.entity';
 import { DiscordUser } from '../discord-users/entities/discord-user.entity';
+import { KnownSettings } from './model/known-settings.enum';
+import { settingsParser } from './utils/settings-parser';
+import { RedisService } from '@liaoliaots/nestjs-redis';
 
 @Injectable()
 export class UserSettingsService {
+  private readonly logger = new Logger(UserSettingsService.name);
+
   constructor(
     @InjectRepository(UserSetting)
     private readonly userSettingsRepository: Repository<UserSetting>,
+    private readonly redisService: RedisService,
   ) {}
 
   async findAll(user: DiscordUser | string) {
@@ -42,8 +46,12 @@ export class UserSettingsService {
     return record ? UserSetting.getDecodedValue(record) : null;
   }
 
+  protected getSettingsCacheKey(userId: string) {
+    return `user-settings-${userId}`;
+  }
+
   async setSetting<Setting extends KnownSettings>(
-    user: DiscordUser,
+    discordUser: DiscordUser,
     setting: Setting,
     value: unknown,
   ): Promise<UserSetting<Setting>> {
@@ -56,7 +64,7 @@ export class UserSettingsService {
       throw new Error(`Setting ${setting} value type mismatch`);
     }
 
-    let record = await this.getSetting(user, setting);
+    let record = await this.getSetting(discordUser, setting);
     if (record) {
       if (parsedValue === null) {
         await this.userSettingsRepository.remove(record);
@@ -70,12 +78,25 @@ export class UserSettingsService {
     } else {
       debugger;
       record = new UserSetting<Setting>();
-      record.user = user;
+      record.user = discordUser;
       record.setting = setting;
       record.value = JSON.stringify(parsedValue);
       if (parsedValue !== null) {
         await this.userSettingsRepository.save(record);
       }
+    }
+
+    const cacheKey = this.getSettingsCacheKey(discordUser.id);
+    try {
+      const count = await this.redisService.getClient().del(cacheKey);
+      if (count > 0) {
+        this.logger.debug(`Deleted cache key ${cacheKey} successfully`);
+      } else {
+        this.logger.debug(`Cache key ${cacheKey} not found`);
+      }
+    } catch (e) {
+      this.logger.error(`Failed to delete cache key ${cacheKey}`);
+      this.logger.error(e);
     }
 
     return record;

@@ -8,6 +8,7 @@ import { getRandomUuid } from './utils/random';
 import { BullModule } from '@nestjs/bull';
 import { serverEnv } from './server-env';
 import { ScheduleModule } from '@nestjs/schedule';
+import { RedisModule, RedisService } from '@liaoliaots/nestjs-redis';
 
 const imports = [
   ConfigModule.forRoot(),
@@ -44,15 +45,37 @@ const imports = [
       quietReqLogger: true,
     },
   }),
-  BullModule.forRoot({
-    redis: {
-      host: serverEnv.REDIS_HOST,
-      port: serverEnv.REDIS_PORT,
-      username: serverEnv.REDIS_USER,
-      password: serverEnv.REDIS_PASS,
+  BullModule.forRootAsync({
+    useFactory(redisService: RedisService) {
+      return {
+        createClient: () => redisService.getClient('bull'),
+      };
     },
+    inject: [RedisService],
   }),
   ScheduleModule.forRoot(),
+  RedisModule.forRoot({
+    config: [
+      {},
+      {
+        namespace: 'bull',
+        keyPrefix: `${serverEnv.REDIS_PREFIX}bull:`,
+        enableReadyCheck: false,
+        maxRetriesPerRequest: null,
+      },
+    ],
+    errorLog: true,
+    readyLog: true,
+    closeClient: true,
+    commonOptions: {
+      port: serverEnv.REDIS_PORT,
+      host: serverEnv.REDIS_HOST,
+      username: serverEnv.REDIS_USER,
+      password: serverEnv.REDIS_PASS,
+      keyPrefix: serverEnv.REDIS_PREFIX,
+      lazyConnect: true,
+    },
+  }),
 ];
 
 @Module({

@@ -1,12 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import type { DiscordUser } from '../../discord-users/entities/discord-user.entity';
-import { isValidTimeZone } from '../../utils/timezone';
-
-export const KnownSettings = {
-  timezone: 'timezone',
-  ephemeral: 'ephemeral',
-} as const;
-export type KnownSettings = (typeof KnownSettings)[keyof typeof KnownSettings];
+import { KnownSettings } from '../model/known-settings.enum';
 
 export interface SettingTypes {
   [KnownSettings.timezone]: string;
@@ -20,15 +14,6 @@ export const settingsTypeGuards: {
     typeof value === 'string',
   [KnownSettings.ephemeral]: (value): value is boolean =>
     typeof value === 'boolean',
-};
-
-export const settingsParser: {
-  [k in KnownSettings]: (value: unknown) => SettingTypes[k] | null;
-} = {
-  [KnownSettings.timezone]: (value) =>
-    typeof value === 'string' && isValidTimeZone(value) ? value : null,
-  [KnownSettings.ephemeral]: (value) =>
-    typeof value === 'boolean' ? value : null,
 };
 
 export const USER_SETTINGS_SETTING_MAX_LENGTH = 64;

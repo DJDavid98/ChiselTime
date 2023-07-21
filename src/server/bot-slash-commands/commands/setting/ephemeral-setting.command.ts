@@ -8,8 +8,8 @@ import { DiscordUsersService } from '../../../discord-users/discord-users.servic
 import { UserSettingsService } from '../../../user-settings/user-settings.service';
 import { SlashCommandPipe } from '@discord-nestjs/common';
 import { updateSetting } from '../../../utils/settings';
-import { KnownSettings } from '../../../user-settings/entities/user-setting.entity';
 import { SetEphemeralDto } from '../../dto/set-ephemeral.dto';
+import { KnownSettings } from '../../../user-settings/model/known-settings.enum';
 
 @SubCommand({
   name: 'ephemeral',

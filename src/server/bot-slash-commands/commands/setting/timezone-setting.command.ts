@@ -9,8 +9,8 @@ import { UserSettingsService } from '../../../user-settings/user-settings.servic
 import { SlashCommandPipe } from '@discord-nestjs/common';
 import { updateSetting } from '../../../utils/settings';
 import { SetTimezoneDto } from '../../dto/set-timezone.dto';
-import { KnownSettings } from '../../../user-settings/entities/user-setting.entity';
 import { timeZonesNames } from '@vvo/tzdb';
+import { KnownSettings } from '../../../user-settings/model/known-settings.enum';
 
 @SubCommand({
   name: 'timezone',

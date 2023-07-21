@@ -6,7 +6,8 @@ import {
 import { Injectable } from '@nestjs/common';
 import { DiscordUsersService } from '../../../discord-users/discord-users.service';
 import { UserSettingsService } from '../../../user-settings/user-settings.service';
-import { KnownSettings } from '../../../user-settings/entities/user-setting.entity';
+import { UserSetting } from '../../../user-settings/entities/user-setting.entity';
+import { KnownSettings } from '../../../user-settings/model/known-settings.enum';
 
 @SubCommand({
   name: 'list',
@@ -41,7 +42,9 @@ export class ListSettingCommand {
     const settingObject = settings.reduce(
       (obj, setting) => ({
         ...obj,
-        [setting.setting]: setting.value,
+        [setting.setting]: UserSetting.getDecodedValue(
+          setting as UserSetting<never>,
+        ),
       }),
       defaultSettings,
     );

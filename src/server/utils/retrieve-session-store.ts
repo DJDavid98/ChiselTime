@@ -14,12 +14,12 @@ export const retrieveSessionStore = async (
     username: serverEnv.REDIS_USER,
     password: serverEnv.REDIS_PASS,
     lazyConnect: true,
+    keyPrefix: serverEnv.REDIS_PREFIX,
   });
   logger.log('Connecting to Redis client for session store…');
   await client.connect();
   logger.log('Connected to Redis client for session store');
   return new RedisStore({
     client,
-    prefix: 'chiseltime:',
   });
 };
