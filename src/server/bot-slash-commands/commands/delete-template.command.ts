@@ -79,7 +79,7 @@ export class DeleteTemplateCommand {
     await this.entityManager.remove(existingTemplate);
 
     await interaction.reply({
-      content: `Template ${existingTemplateId} successfully deleted`,
+      content: `Template \`${existingTemplateId}\` successfully deleted`,
       ephemeral: true,
     });
   }
