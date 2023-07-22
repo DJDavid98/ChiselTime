@@ -6,6 +6,7 @@ import { SharedModule } from '../shared.module';
 import { BullModule } from '@nestjs/bull';
 import { DiscordRestModule } from '../discord-rest/discord-rest.module';
 import { messageUpdatesQueueName } from './message-updates.queue';
+import { UserSettingsModule } from '../user-settings/user-settings.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { messageUpdatesQueueName } from './message-updates.queue';
       name: messageUpdatesQueueName,
     }),
     MessageTemplatesModule,
+    UserSettingsModule,
     DiscordRestModule,
   ],
   providers: [MessageUpdatesService, MessageUpdatesConsumer],
