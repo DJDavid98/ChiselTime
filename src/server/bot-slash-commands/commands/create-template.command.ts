@@ -11,6 +11,7 @@ import { DiscordUsersService } from '../../discord-users/discord-users.service';
 import { getReadableInterval } from '../../../client/utils/get-readable-interval';
 import { KnownSettings } from '../../user-settings/model/known-settings.enum';
 import { UserSettingsService } from '../../user-settings/user-settings.service';
+import { UserSetting } from '../../user-settings/entities/user-setting.entity';
 
 @Command({
   name: 'Create Template',
@@ -90,13 +91,13 @@ export class CreateTemplateCommand {
     }
 
     const templateContent = message.content;
+    const timezoneSetting = await this.userSettingsService.getSetting(
+      discordUser,
+      KnownSettings.timezone,
+    );
     const timezone =
-      (
-        await this.userSettingsService.getSetting(
-          discordUser,
-          KnownSettings.timezone,
-        )
-      )?.value ?? 'UTC';
+      (timezoneSetting && UserSetting.getDecodedValue(timezoneSetting)) ??
+      'UTC';
     const channelMessage = await interactionChannel.send({
       content: replaceIntervalsInString(message.content, timezone),
     });
