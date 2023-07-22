@@ -11,7 +11,7 @@ if [[ "$refname" ==  "$RUN_FOR_REF" ]]; then
     CMD_DEPS="npm ci"
     CMD_BUILD="nice npm run build"
     CMD_MIGRATE="npm run typeorm:run"
-    CMD_RESTART="pm2 reload pm2.json"
+    CMD_RESTART="pm2 restart pm2.json"
 
     echo "$ $CMD_CD"
     eval ${CMD_CD}

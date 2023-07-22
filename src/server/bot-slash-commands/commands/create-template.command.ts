@@ -9,6 +9,8 @@ import { replaceIntervalsInString } from '../../utils/interval-parsing/replace-i
 import { MessageTemplatesService } from '../../message-templates/message-templates.service';
 import { DiscordUsersService } from '../../discord-users/discord-users.service';
 import { getReadableInterval } from '../../../client/utils/get-readable-interval';
+import { KnownSettings } from '../../user-settings/model/known-settings.enum';
+import { UserSettingsService } from '../../user-settings/user-settings.service';
 
 @Command({
   name: 'Create Template',
@@ -19,6 +21,7 @@ export class CreateTemplateCommand {
   constructor(
     private readonly discordUsersService: DiscordUsersService,
     private readonly messageTemplatesService: MessageTemplatesService,
+    private readonly userSettingsService: UserSettingsService,
   ) {}
 
   @Handler()
@@ -87,8 +90,15 @@ export class CreateTemplateCommand {
     }
 
     const templateContent = message.content;
+    const timezone =
+      (
+        await this.userSettingsService.getSetting(
+          discordUser,
+          KnownSettings.timezone,
+        )
+      )?.value ?? 'UTC';
     const channelMessage = await interactionChannel.send({
-      content: replaceIntervalsInString(message.content),
+      content: replaceIntervalsInString(message.content, timezone),
     });
 
     const templateMessage = await this.messageTemplatesService.create({
