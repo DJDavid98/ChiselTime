@@ -7,13 +7,15 @@ import {
   RESTPatchAPIChannelMessageResult,
   Routes,
 } from 'discord-api-types/v10';
-import { replaceIntervalsInString } from '../utils/interval-parsing';
+import { replaceIntervalsInString } from '../utils/interval-parsing/replace-intervals-in-string';
 import { DiscordRestService } from '../discord-rest/discord-rest.service';
 import {
   messageUpdatesConcurrency,
   MessageUpdatesQueueData,
   messageUpdatesQueueName,
 } from './message-updates.queue';
+import { UserSettingsService } from '../user-settings/user-settings.service';
+import { KnownSettings } from '../user-settings/model/known-settings.enum';
 
 @Processor(messageUpdatesQueueName)
 export class MessageUpdatesConsumer {
@@ -22,6 +24,7 @@ export class MessageUpdatesConsumer {
   constructor(
     private readonly messageTemplatesService: MessageTemplatesService,
     private readonly discordRestService: DiscordRestService,
+    private readonly userSettingsService: UserSettingsService,
   ) {}
 
   @Process({ concurrency: messageUpdatesConcurrency })
@@ -40,8 +43,17 @@ export class MessageUpdatesConsumer {
       );
       return;
     }
+
+    const timezone =
+      (
+        await this.userSettingsService.getSetting(
+          messageTemplate.author,
+          KnownSettings.timezone,
+        )
+      )?.value ?? 'UTC';
+
     const body: RESTPatchAPIChannelMessageJSONBody = {
-      content: replaceIntervalsInString(messageTemplate.body),
+      content: replaceIntervalsInString(messageTemplate.body, timezone),
     };
     const endpoint = Routes.channelMessage(
       messageTemplate.channelId,

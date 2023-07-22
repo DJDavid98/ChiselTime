@@ -5,7 +5,7 @@ import {
   TextChannel,
 } from 'discord.js';
 import { Command, Handler } from '@discord-nestjs/core';
-import { replaceIntervalsInString } from '../../utils/interval-parsing';
+import { replaceIntervalsInString } from '../../utils/interval-parsing/replace-intervals-in-string';
 import { MessageTemplatesService } from '../../message-templates/message-templates.service';
 import { DiscordUsersService } from '../../discord-users/discord-users.service';
 import { getReadableInterval } from '../../../client/utils/get-readable-interval';
