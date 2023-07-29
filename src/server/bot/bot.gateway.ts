@@ -77,6 +77,7 @@ export class BotGateway {
             const templateUpdateFrequency =
               interaction.fields.getTextInputValue(updateFrequencyInputId);
 
+            const warnings = [];
             const update: UpdateMessageTemplateDto = { lastEditedAt: null };
             if (templateBody !== existingTemplate.body) {
               update.body = templateBody;
@@ -86,13 +87,19 @@ export class BotGateway {
                 if (existingTemplate.timezone !== null) {
                   update.timezone = null;
                 }
-              } else if (isValidTimeZone(templateTimezone)) {
-                update.timezone = templateTimezone;
+              } else {
+                if (isValidTimeZone(templateTimezone)) {
+                  update.timezone = templateTimezone;
+                } else {
+                  warnings.push(`The provided timezone is invalid`);
+                }
               }
             }
             if (templateUpdateFrequency !== existingTemplate.updateFrequency) {
               if (isValidUpdateFrequency(templateUpdateFrequency)) {
                 update.updateFrequency = templateUpdateFrequency;
+              } else {
+                warnings.push(`The provided update frequency is invalid`);
               }
             }
 
@@ -121,15 +128,31 @@ export class BotGateway {
               );
             }
             let updateText = '';
-            if (updateMessages.length) {
-              updateText =
+            if (warnings.length) {
+              updateText +=
                 '\n' +
-                updateMessages.map((m) => `* ${m}`).join('\n') +
+                warnings
+                  .map(
+                    (m) =>
+                      `${Emoji.WARNING} ${m}, this value was left unchanged`,
+                  )
+                  .join('\n');
+            }
+            if (updateMessages.length) {
+              updateText +=
+                '\n' +
+                updateMessages
+                  .map((m) => `${Emoji.INFO_BUTTON} ${m}`)
+                  .join('\n') +
                 `\n${Emoji.REPEAT_BUTTON} The message will be updated shortly`;
             }
 
             await interaction.reply({
-              content: `${Emoji.CHECK_MARK_BUTTON} Template \`${existingTemplate.id}\` successfully edited.${updateText}`,
+              content: `${Emoji.CHECK_MARK_BUTTON} Template \`${
+                existingTemplate.id
+              }\` ${
+                warnings.length ? 'edited with warnings' : 'successfully edited'
+              }.${updateText}`,
               ephemeral: true,
             });
           }
