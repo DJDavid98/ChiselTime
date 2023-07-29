@@ -78,4 +78,8 @@ export class MessageTemplatesService {
     }
     return this.messageTemplatesRepository.remove(idOeEntity);
   }
+
+  count() {
+    return this.messageTemplatesRepository.count();
+  }
 }

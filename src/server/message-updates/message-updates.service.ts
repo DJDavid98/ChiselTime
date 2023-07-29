@@ -41,6 +41,10 @@ export class MessageUpdatesService {
     return this.messageUpdateQueue.add({ id: templateId });
   }
 
+  public queueSize() {
+    return this.messageUpdateQueue.count();
+  }
+
   @Cron(CronExpression.EVERY_MINUTE)
   async handleCron() {
     this.logger.debug('Processing message updates…');
