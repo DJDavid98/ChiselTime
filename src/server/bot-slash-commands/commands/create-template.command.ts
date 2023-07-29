@@ -9,11 +9,11 @@ import { replaceIntervalsInString } from '../../utils/interval-parsing/replace-i
 import { MessageTemplatesService } from '../../message-templates/message-templates.service';
 import { DiscordUsersService } from '../../discord-users/discord-users.service';
 import { getReadableInterval } from '../../../client/utils/get-readable-interval';
-import { KnownSettings } from '../../user-settings/model/known-settings.enum';
 import { UserSettingsService } from '../../user-settings/user-settings.service';
-import { UserSetting } from '../../user-settings/entities/user-setting.entity';
 import { fallbackTimezone } from '../../common/time';
 import { Emoji } from '../../common/emoji';
+import { ensureDiscordUser, resolveUserTimezone } from '../utils/permissions';
+import { UserFacingError } from '../utils/user-facing-error.class';
 
 @Command({
   name: 'Create Template',
@@ -48,81 +48,88 @@ export class CreateTemplateCommand {
       return;
     }
 
-    const discordUser = await this.discordUsersService.findOne(
-      interaction.user.id,
-    );
-    if (!discordUser) {
-      await interaction.reply({
-        content: 'Could not find Discord user in the database',
-        ephemeral: true,
-      });
-      return;
-    }
+    try {
+      const discordUser = await ensureDiscordUser(
+        this.discordUsersService,
+        interaction.user.id,
+      );
 
-    const userTemplates = await this.messageTemplatesService.findAll({
-      discordUserIds: [discordUser.id],
-    });
-    const localUser = await discordUser.user;
-    const maxTemplateCount = localUser.getMaxTemplateCount();
-    if (userTemplates.length >= maxTemplateCount) {
+      const userTemplates = await this.messageTemplatesService.findAll({
+        discordUserIds: [discordUser.id],
+      });
+      const localUser = await discordUser.user;
+      const maxTemplateCount = localUser.getMaxTemplateCount();
+      if (userTemplates.length >= maxTemplateCount) {
+        await interaction.reply({
+          content: [
+            `You have reached the maximum number of templates (${maxTemplateCount}) for your account, delete existing templates to create a new one:`,
+            ...userTemplates.map(
+              (template) =>
+                `• ${template.getMessageUrl()} (\`${template.id}\`)`,
+            ),
+          ].join('\n'),
+          ephemeral: true,
+        });
+        return;
+      }
+
+      const existingTemplate = await this.messageTemplatesService.findExisting(
+        message.channelId,
+        message.id,
+      );
+      if (existingTemplate) {
+        await interaction.reply({
+          content: [
+            `Template already exists with ID \`${existingTemplate.id}\``,
+            `Message link: ${existingTemplate.getMessageUrl()}`,
+          ].join('\n'),
+          ephemeral: true,
+        });
+        return;
+      }
+
+      const templateContent = message.content;
+      const timezone = await resolveUserTimezone(
+        this.userSettingsService,
+        interaction,
+      );
+      const effectiveTimezone = timezone || fallbackTimezone;
+      const channelMessage = await interactionChannel.send({
+        content: replaceIntervalsInString(templateContent, effectiveTimezone),
+      });
+
+      const templateMessage = await this.messageTemplatesService.create({
+        author: discordUser,
+        body: templateContent,
+        updateFrequency: 'P1D',
+        serverId: channelMessage.guildId,
+        channelId: channelMessage.channelId,
+        messageId: channelMessage.id,
+        timezone,
+      });
+
+      const readableUpdateFrequency = getReadableInterval(
+        templateMessage.updateFrequency,
+      );
       await interaction.reply({
         content: [
-          `You have reached the maximum number of templates (${maxTemplateCount}) for your account, delete existing templates to create a new one:`,
-          ...userTemplates.map(
-            (template) => `• ${template.getMessageUrl()} (\`${template.id}\`)`,
-          ),
+          `${Emoji.CHECK_MARK_BUTTON} Template \`${
+            templateMessage.id
+          }\` created successfully${
+            timezone ? ` with the timezone \`${effectiveTimezone}\`` : ''
+          }. The message will update ${readableUpdateFrequency}`,
         ].join('\n'),
         ephemeral: true,
       });
-      return;
+    } catch (e) {
+      if (e instanceof UserFacingError) {
+        await interaction.reply({
+          content: e.message,
+          ephemeral: true,
+        });
+        return;
+      }
+      throw e;
     }
-
-    const existingTemplate = await this.messageTemplatesService.findExisting(
-      message.channelId,
-      message.id,
-    );
-    if (existingTemplate) {
-      await interaction.reply({
-        content: [
-          `Template already exists with ID \`${existingTemplate.id}\``,
-          `Message link: ${existingTemplate.getMessageUrl()}`,
-        ].join('\n'),
-        ephemeral: true,
-      });
-      return;
-    }
-
-    const templateContent = message.content;
-    const timezoneSetting = await this.userSettingsService.getSetting(
-      discordUser,
-      KnownSettings.timezone,
-    );
-    const timezone =
-      (timezoneSetting && UserSetting.getDecodedValue(timezoneSetting)) ??
-      undefined;
-    const effectiveTimezone = timezone || fallbackTimezone;
-    const channelMessage = await interactionChannel.send({
-      content: replaceIntervalsInString(templateContent, effectiveTimezone),
-    });
-
-    const templateMessage = await this.messageTemplatesService.create({
-      author: discordUser,
-      body: templateContent,
-      updateFrequency: 'P1D',
-      serverId: channelMessage.guildId,
-      channelId: channelMessage.channelId,
-      messageId: channelMessage.id,
-      timezone,
-    });
-
-    const readableUpdateFrequency = getReadableInterval(
-      templateMessage.updateFrequency,
-    );
-    await interaction.reply({
-      content: [
-        `${Emoji.CHECK_MARK_BUTTON} Template \`${templateMessage.id}\` created successfully with the timezone \`${effectiveTimezone}\`. The message will update ${readableUpdateFrequency}`,
-      ].join('\n'),
-      ephemeral: true,
-    });
   }
 }

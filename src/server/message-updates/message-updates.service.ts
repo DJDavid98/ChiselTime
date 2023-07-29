@@ -37,8 +37,8 @@ export class MessageUpdatesService {
     }
   }
 
-  public queueUpdate(id: string) {
-    return this.messageUpdateQueue.add({ id });
+  public queueUpdate(templateId: string) {
+    return this.messageUpdateQueue.add({ id: templateId });
   }
 
   @Cron(CronExpression.EVERY_MINUTE)

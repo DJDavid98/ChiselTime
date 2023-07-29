@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { StatisticsCommand } from './commands/statistics.command';
 import { CreateTemplateCommand } from './commands/create-template.command';
 import { SharedModule } from '../shared.module';
-import { DeleteTemplateCommand } from './commands/delete-template.command';
 import { MessageTemplatesModule } from '../message-templates/message-templates.module';
 import { DiscordUsersModule } from '../discord-users/discord-users.module';
 import { UserSettingsModule } from '../user-settings/user-settings.module';
@@ -11,12 +10,14 @@ import { DiscordModule } from '@discord-nestjs/core';
 import { TimezoneSettingCommand } from './commands/setting/timezone-setting.command';
 import { ListSettingCommand } from './commands/setting/list-setting.command';
 import { EphemeralSettingCommand } from './commands/setting/ephemeral-setting.command';
-import { EditTemplateCommand } from './commands/edit-template.command';
+import { ManageTemplateCommand } from './commands/manage-template.command';
+import { MessageUpdatesModule } from '../message-updates/message-updates.module';
 
 @Module({
   imports: [
     SharedModule,
     MessageTemplatesModule,
+    MessageUpdatesModule,
     DiscordUsersModule,
     UserSettingsModule,
     DiscordModule.forFeature(),
@@ -24,8 +25,7 @@ import { EditTemplateCommand } from './commands/edit-template.command';
   providers: [
     StatisticsCommand,
     CreateTemplateCommand,
-    EditTemplateCommand,
-    DeleteTemplateCommand,
+    ManageTemplateCommand,
     SettingCommand,
     TimezoneSettingCommand,
     ListSettingCommand,

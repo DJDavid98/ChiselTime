@@ -91,3 +91,10 @@ export const getBareNumberFormatter = (
   }
   return numberFormatter;
 };
+
+export const processCustomId = (interaction: {
+  customId?: string;
+}): Array<string> => {
+  if (!('customId' in interaction) || !interaction.customId) return [];
+  return interaction.customId.split('.', 2);
+};
