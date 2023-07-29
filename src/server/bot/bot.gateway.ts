@@ -82,10 +82,12 @@ export class BotGateway {
               update.body = templateBody;
             }
             if (templateTimezone !== existingTemplate.timezone) {
-              if (isValidTimeZone(templateTimezone)) {
+              if (templateTimezone === '') {
+                if (existingTemplate.timezone !== null) {
+                  update.timezone = null;
+                }
+              } else if (isValidTimeZone(templateTimezone)) {
                 update.timezone = templateTimezone;
-              } else if (templateTimezone === '') {
-                update.timezone = null;
               }
             }
             if (templateUpdateFrequency !== existingTemplate.updateFrequency) {
@@ -123,7 +125,7 @@ export class BotGateway {
               updateText =
                 '\n' +
                 updateMessages.map((m) => `* ${m}`).join('\n') +
-                `\n${Emoji.COUNTERCLOCKWISE_ARROWS_BUTTON} The message will be updated shortly based on the changes.`;
+                `\n${Emoji.REPEAT_BUTTON} The message will be updated shortly`;
             }
 
             await interaction.reply({
