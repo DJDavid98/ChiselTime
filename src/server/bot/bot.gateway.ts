@@ -78,7 +78,8 @@ export class BotGateway {
               interaction.fields.getTextInputValue(updateFrequencyInputId);
 
             const warnings = [];
-            const update: UpdateMessageTemplateDto = { lastEditedAt: null };
+            const updateMessages = [];
+            const update: Omit<UpdateMessageTemplateDto, 'lastEditedAt'> = {};
             if (templateBody !== existingTemplate.body) {
               update.body = templateBody;
             }
@@ -103,11 +104,15 @@ export class BotGateway {
               }
             }
 
-            await this.messageTemplatesService.update(existingTemplate, update);
+            if (Object.keys(update).length > 0) {
+              await this.messageTemplatesService.update(existingTemplate, {
+                ...update,
+                lastEditedAt: null,
+              });
 
-            await this.messageUpdatesService.queueUpdate(existingTemplate.id);
+              await this.messageUpdatesService.queueUpdate(existingTemplate.id);
+            }
 
-            const updateMessages = [];
             if (typeof update.body !== 'undefined') {
               updateMessages.push(`The template text has been replaced`);
             }
