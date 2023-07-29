@@ -126,6 +126,7 @@ export class EditTemplateCommand {
       .setLabel('Timezone')
       .setStyle(TextInputStyle.Short)
       .setPlaceholder(effectiveTimezone)
+      .setRequired(false)
       .setMaxLength(timezoneColumnMaxLength);
     if (existingTemplate.timezone) {
       timezoneInput.setValue(existingTemplate.timezone);
