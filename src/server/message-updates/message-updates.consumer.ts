@@ -17,6 +17,7 @@ import {
 import { UserSettingsService } from '../user-settings/user-settings.service';
 import { KnownSettings } from '../user-settings/model/known-settings.enum';
 import { UserSetting } from '../user-settings/entities/user-setting.entity';
+import { fallbackTimezone } from '../common/time';
 
 @Processor(messageUpdatesQueueName)
 export class MessageUpdatesConsumer {
@@ -49,9 +50,14 @@ export class MessageUpdatesConsumer {
       messageTemplate.author,
       KnownSettings.timezone,
     );
-    const timezone =
-      (timezoneSetting && UserSetting.getDecodedValue(timezoneSetting)) ??
-      'UTC';
+    let timezone: string;
+    if (messageTemplate.timezone) {
+      timezone = messageTemplate.timezone;
+    } else {
+      timezone =
+        (timezoneSetting && UserSetting.getDecodedValue(timezoneSetting)) ??
+        fallbackTimezone;
+    }
 
     const body: RESTPatchAPIChannelMessageJSONBody = {
       content: replaceIntervalsInString(messageTemplate.body, timezone),

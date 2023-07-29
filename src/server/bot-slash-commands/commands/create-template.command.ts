@@ -12,6 +12,7 @@ import { getReadableInterval } from '../../../client/utils/get-readable-interval
 import { KnownSettings } from '../../user-settings/model/known-settings.enum';
 import { UserSettingsService } from '../../user-settings/user-settings.service';
 import { UserSetting } from '../../user-settings/entities/user-setting.entity';
+import { fallbackTimezone } from '../../common/time';
 
 @Command({
   name: 'Create Template',
@@ -97,9 +98,10 @@ export class CreateTemplateCommand {
     );
     const timezone =
       (timezoneSetting && UserSetting.getDecodedValue(timezoneSetting)) ??
-      'UTC';
+      undefined;
+    const effectiveTimezone = timezone || fallbackTimezone;
     const channelMessage = await interactionChannel.send({
-      content: replaceIntervalsInString(message.content, timezone),
+      content: replaceIntervalsInString(message.content, effectiveTimezone),
     });
 
     const templateMessage = await this.messageTemplatesService.create({
@@ -109,6 +111,7 @@ export class CreateTemplateCommand {
       serverId: channelMessage.guildId,
       channelId: channelMessage.channelId,
       messageId: channelMessage.id,
+      timezone,
     });
 
     const readableUpdateFrequency = getReadableInterval(
@@ -116,7 +119,7 @@ export class CreateTemplateCommand {
     );
     await interaction.reply({
       content: [
-        `Template \`${templateMessage.id}\` created successfully. The message will update ${readableUpdateFrequency}`,
+        `Template \`${templateMessage.id}\` created successfully with the timezone \`${effectiveTimezone}\`. The message will update ${readableUpdateFrequency}`,
       ].join('\n'),
       ephemeral: true,
     });

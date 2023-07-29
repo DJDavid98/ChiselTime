@@ -24,6 +24,9 @@ export const TemplateDisplay: FC<{ template: MessageTemplateDto }> = ({
           <strong>Update frequency:</strong> {readableUpdateFrequency}
         </p>
         <p className={styles.metadata}>
+          <strong>Timezone:</strong> {template.timezone}
+        </p>
+        <p className={styles.metadata}>
           <strong>Last update:</strong> {lastEditTs || <em>unknown</em>}
         </p>
       </div>

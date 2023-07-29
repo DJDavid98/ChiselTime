@@ -1,4 +1,5 @@
 import { MessageTemplate } from '../entities/message-template.entity';
+import { fallbackTimezone } from '../../common/time';
 
 export class MessageTemplateDto {
   id: string;
@@ -8,6 +9,7 @@ export class MessageTemplateDto {
    * Timestamp in milliseconds
    */
   lastEditedAt?: number;
+  timezone: string;
 
   static from(mt: MessageTemplate) {
     const dto = new MessageTemplateDto();
@@ -15,6 +17,7 @@ export class MessageTemplateDto {
     dto.body = mt.body;
     dto.updateFrequency = mt.updateFrequency;
     dto.lastEditedAt = mt.lastEditedAt?.getTime();
+    dto.timezone = mt.timezone ?? fallbackTimezone;
     return dto;
   }
 }

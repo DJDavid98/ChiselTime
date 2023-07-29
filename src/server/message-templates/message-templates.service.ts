@@ -20,6 +20,9 @@ export class MessageTemplatesService {
     messageTemplate.author = createMessageTemplateDto.author;
     messageTemplate.updateFrequency = createMessageTemplateDto.updateFrequency;
     messageTemplate.body = createMessageTemplateDto.body;
+    if (createMessageTemplateDto.timezone) {
+      messageTemplate.timezone = createMessageTemplateDto.timezone;
+    }
     return await this.messageTemplatesRepository.save(messageTemplate);
   }
 
@@ -62,6 +65,9 @@ export class MessageTemplatesService {
     }
     if (updateMessageTemplateDto.lastEditedAt) {
       messageTemplate.lastEditedAt = updateMessageTemplateDto.lastEditedAt;
+    }
+    if (typeof updateMessageTemplateDto.timezone !== 'undefined') {
+      messageTemplate.timezone = updateMessageTemplateDto.timezone;
     }
     return this.messageTemplatesRepository.save(messageTemplate);
   }

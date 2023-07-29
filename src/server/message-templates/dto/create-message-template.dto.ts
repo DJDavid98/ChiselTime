@@ -7,4 +7,5 @@ export class CreateMessageTemplateDto {
   body: string;
   author: DiscordUser;
   updateFrequency: string;
+  timezone?: string;
 }
