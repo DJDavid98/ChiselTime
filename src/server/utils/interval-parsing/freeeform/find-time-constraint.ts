@@ -6,18 +6,18 @@ export function findTimeConstraint(input: string): TimeConstraint | undefined {
   );
   if (result) {
     const [, hours, minutes, seconds, ampm] = result;
-    let hoursConstraint: number | undefined = undefined;
-    if (hours) {
-      if (ampm) {
-        const baseValue = parseInt(hours, 10) % 12;
-        hoursConstraint = ampm === 'am' ? baseValue : 12 + baseValue;
-      } else {
-        hoursConstraint = parseInt(hours, 10);
-      }
+    if (!hours) {
+      // Theoretically impossible due to the regex requiring the hours component
+      return undefined;
+    }
+    let hoursConstraint = parseInt(hours, 10);
+    if (ampm) {
+      const baseValue = hoursConstraint % 12;
+      hoursConstraint = ampm === 'pm' ? 12 + baseValue : baseValue;
     }
 
-    const minutesConstraint = minutes ? parseInt(minutes) : undefined;
-    const secondsConstraint = seconds ? parseInt(seconds) : undefined;
+    const minutesConstraint = minutes ? parseInt(minutes) : 0;
+    const secondsConstraint = seconds ? parseInt(seconds) : 0;
 
     return new TimeConstraint(
       hoursConstraint,

@@ -32,9 +32,9 @@ describe('findTimeConstraint', () => {
     });
   });
 
-  describe('hours only', () => {
-    const expectedAm = new TimeConstraint(5, undefined, undefined);
-    const expectedPm = new TimeConstraint(17, undefined, undefined);
+  describe('regular hours only', () => {
+    const expectedAm = new TimeConstraint(5, 0, 0);
+    const expectedPm = new TimeConstraint(17, 0, 0);
     describe('12h', () => {
       it('should process time in before noon', () => {
         const input = 'at 5am';
@@ -61,9 +61,38 @@ describe('findTimeConstraint', () => {
     });
   });
 
+  describe('midnight and noon hours only', () => {
+    const expectedAm = new TimeConstraint(0, 0, 0);
+    const expectedPm = new TimeConstraint(12, 0, 0);
+    describe('12h', () => {
+      it('should process time in before noon', () => {
+        const input = 'at 12am';
+        const actual = findTimeConstraint(input);
+        expect(actual).toEqual(expectedAm);
+      });
+      it('should process time in the afternoon', () => {
+        const input = 'at 12pm';
+        const actual = findTimeConstraint(input);
+        expect(actual).toEqual(expectedPm);
+      });
+    });
+    describe('24h', () => {
+      it('should process time in before noon', () => {
+        const input = 'at 0';
+        const actual = findTimeConstraint(input);
+        expect(actual).toEqual(expectedAm);
+      });
+      it('should process time in the afternoon', () => {
+        const input = 'at 12';
+        const actual = findTimeConstraint(input);
+        expect(actual).toEqual(expectedPm);
+      });
+    });
+  });
+
   describe('hours and minutes', () => {
-    const expectedAm = new TimeConstraint(5, 30, undefined);
-    const expectedPm = new TimeConstraint(17, 30, undefined);
+    const expectedAm = new TimeConstraint(5, 30, 0);
+    const expectedPm = new TimeConstraint(17, 30, 0);
     describe('12h', () => {
       it('should process time in before noon', () => {
         const input = 'at 5:30am';
