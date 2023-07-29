@@ -7,6 +7,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import type { DiscordUser } from '../../discord-users/entities/discord-user.entity';
+import {
+  timezoneColumnMaxLength,
+  updateFrequencyColumnMaxLength,
+} from '../../common/time';
 
 @Entity('message_templates')
 export class MessageTemplate {
@@ -53,13 +57,20 @@ export class MessageTemplate {
    * If the `lastEditedAt` date + this duration is in the past, the message
    * needs to be updated
    */
-  @Column('character varying', { length: 16, nullable: false })
+  @Column('character varying', {
+    length: updateFrequencyColumnMaxLength,
+    nullable: false,
+  })
   updateFrequency: string;
 
   /**
    * IANA timezone identifier
    */
-  @Column('character varying', { length: 64, nullable: true, default: null })
+  @Column('character varying', {
+    length: timezoneColumnMaxLength,
+    nullable: true,
+    default: null,
+  })
   timezone: string | null;
 
   @Column('timestamptz', { default: null, nullable: true })

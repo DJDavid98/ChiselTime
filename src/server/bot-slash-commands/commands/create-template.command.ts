@@ -13,6 +13,7 @@ import { KnownSettings } from '../../user-settings/model/known-settings.enum';
 import { UserSettingsService } from '../../user-settings/user-settings.service';
 import { UserSetting } from '../../user-settings/entities/user-setting.entity';
 import { fallbackTimezone } from '../../common/time';
+import { Emoji } from '../../common/emoji';
 
 @Command({
   name: 'Create Template',
@@ -101,7 +102,7 @@ export class CreateTemplateCommand {
       undefined;
     const effectiveTimezone = timezone || fallbackTimezone;
     const channelMessage = await interactionChannel.send({
-      content: replaceIntervalsInString(message.content, effectiveTimezone),
+      content: replaceIntervalsInString(templateContent, effectiveTimezone),
     });
 
     const templateMessage = await this.messageTemplatesService.create({
@@ -119,7 +120,7 @@ export class CreateTemplateCommand {
     );
     await interaction.reply({
       content: [
-        `Template \`${templateMessage.id}\` created successfully with the timezone \`${effectiveTimezone}\`. The message will update ${readableUpdateFrequency}`,
+        `${Emoji.CHECK_MARK_BUTTON} Template \`${templateMessage.id}\` created successfully with the timezone \`${effectiveTimezone}\`. The message will update ${readableUpdateFrequency}`,
       ].join('\n'),
       ephemeral: true,
     });

@@ -1,10 +1,21 @@
 import { Injectable, Logger, UseInterceptors } from '@nestjs/common';
 import { InjectDiscordClient, On, Once } from '@discord-nestjs/core';
-import { ActivityType, Client, Events, Message } from 'discord.js';
+import { ActivityType, Client, Events, Interaction, Message } from 'discord.js';
 import { CollectorInterceptor } from '@discord-nestjs/common';
 import { MessageTemplate } from '../message-templates/entities/message-template.entity';
 import { MessageTemplatesService } from '../message-templates/message-templates.service';
 import { serverEnv } from '../server-env';
+import {
+  editTemplateModalIdPrefix,
+  templateInputId,
+  timezoneInputId,
+  updateFrequencyInputId,
+} from '../common/modals';
+import { UpdateMessageTemplateDto } from '../message-templates/dto/update-message-template.dto';
+import { isValidTimeZone, isValidUpdateFrequency } from '../utils/timezone';
+import { getReadableInterval } from '../../client/utils/get-readable-interval';
+import { MessageUpdatesService } from '../message-updates/message-updates.service';
+import { Emoji } from '../common/emoji';
 
 @Injectable()
 export class BotGateway {
@@ -14,6 +25,7 @@ export class BotGateway {
     @InjectDiscordClient()
     private readonly client: Client,
     private readonly messageTemplatesService: MessageTemplatesService,
+    private readonly messageUpdatesService: MessageUpdatesService,
   ) {}
 
   @Once(Events.ClientReady)
@@ -26,6 +38,102 @@ export class BotGateway {
       name: host,
       url: serverEnv.PUBLIC_HOST,
     });
+  }
+
+  @On(Events.InteractionCreate)
+  @UseInterceptors(CollectorInterceptor)
+  async onInteractionCreate(interaction: Interaction) {
+    if (interaction.isModalSubmit()) {
+      console.debug('interaction.customId', interaction.customId);
+      const [action, entityId] = interaction.customId.split('.', 2);
+      console.debug('action', action);
+      console.debug('entityId', entityId);
+      switch (action) {
+        case editTemplateModalIdPrefix:
+          {
+            const existingTemplate = await this.messageTemplatesService.findOne(
+              entityId,
+            );
+            if (!existingTemplate) {
+              await interaction.reply({
+                content: `No template found with id \`${entityId}\`, it was likely deleted.`,
+                ephemeral: true,
+              });
+              return;
+            }
+
+            if (existingTemplate.author.id !== interaction.user.id) {
+              await interaction.reply({
+                content: 'Only the creator of this template can edit it',
+                ephemeral: true,
+              });
+              return;
+            }
+
+            const templateBody =
+              interaction.fields.getTextInputValue(templateInputId);
+            const templateTimezone =
+              interaction.fields.getTextInputValue(timezoneInputId);
+            const templateUpdateFrequency =
+              interaction.fields.getTextInputValue(updateFrequencyInputId);
+
+            const update: UpdateMessageTemplateDto = { lastEditedAt: null };
+            if (templateBody !== existingTemplate.body) {
+              update.body = templateBody;
+            }
+            if (templateTimezone !== existingTemplate.timezone) {
+              if (isValidTimeZone(templateTimezone)) {
+                update.timezone = templateTimezone;
+              } else if (templateTimezone === '') {
+                update.timezone = null;
+              }
+            }
+            if (templateUpdateFrequency !== existingTemplate.updateFrequency) {
+              if (isValidUpdateFrequency(templateUpdateFrequency)) {
+                update.updateFrequency = templateUpdateFrequency;
+              }
+            }
+
+            await this.messageTemplatesService.update(existingTemplate, update);
+
+            await this.messageUpdatesService.queueUpdate(existingTemplate.id);
+
+            const updateMessages = [];
+            if (typeof update.body !== 'undefined') {
+              updateMessages.push(`The template text has been replaced`);
+            }
+            if (typeof update.timezone !== 'undefined') {
+              updateMessages.push(
+                `The timezone is now set to ${
+                  update.timezone === null
+                    ? 'match your user settings'
+                    : `\`${update.timezone}\``
+                }`,
+              );
+            }
+            if (typeof update.updateFrequency !== 'undefined') {
+              updateMessages.push(
+                `The update frequency is now set to ${getReadableInterval(
+                  update.updateFrequency,
+                )}`,
+              );
+            }
+            let updateText = '';
+            if (updateMessages.length) {
+              updateText =
+                '\n' +
+                updateMessages.map((m) => `* ${m}`).join('\n') +
+                `\n${Emoji.COUNTERCLOCKWISE_ARROWS_BUTTON} The message will be updated shortly based on the changes.`;
+            }
+
+            await interaction.reply({
+              content: `${Emoji.CHECK_MARK_BUTTON} Template \`${existingTemplate.id}\` successfully edited.${updateText}`,
+              ephemeral: true,
+            });
+          }
+          break;
+      }
+    }
   }
 
   // TODO Also perform cleanup on application startup

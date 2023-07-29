@@ -19,5 +19,6 @@ import { UserSettingsModule } from '../user-settings/user-settings.module';
     DiscordRestModule,
   ],
   providers: [MessageUpdatesService, MessageUpdatesConsumer],
+  exports: [MessageUpdatesService],
 })
 export class MessageUpdatesModule {}

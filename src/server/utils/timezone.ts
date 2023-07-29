@@ -1,3 +1,5 @@
+import { Temporal } from '@js-temporal/polyfill';
+
 export const isValidTimeZone = (tz: unknown): boolean => {
   try {
     if (!Intl || !Intl.DateTimeFormat().resolvedOptions().timeZone) {
@@ -12,6 +14,19 @@ export const isValidTimeZone = (tz: unknown): boolean => {
     Intl.DateTimeFormat(undefined, { timeZone: tz });
     return true;
   } catch (error) {
+    return false;
+  }
+};
+
+export const isValidUpdateFrequency = (frequency: unknown): boolean => {
+  if (typeof frequency !== 'string') {
+    return false;
+  }
+  try {
+    const duration = Temporal.Duration.from(frequency);
+    return !duration.blank;
+  } catch (e) {
+    console.error(e);
     return false;
   }
 };

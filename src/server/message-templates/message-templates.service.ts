@@ -63,7 +63,7 @@ export class MessageTemplatesService {
       messageTemplate.updateFrequency =
         updateMessageTemplateDto.updateFrequency;
     }
-    if (updateMessageTemplateDto.lastEditedAt) {
+    if (typeof updateMessageTemplateDto.lastEditedAt !== 'undefined') {
       messageTemplate.lastEditedAt = updateMessageTemplateDto.lastEditedAt;
     }
     if (typeof updateMessageTemplateDto.timezone !== 'undefined') {

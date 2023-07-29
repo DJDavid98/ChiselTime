@@ -2,6 +2,7 @@ import { UserSetting } from '../user-settings/entities/user-setting.entity';
 import { DiscordUsersService } from '../discord-users/discord-users.service';
 import { UserSettingsService } from '../user-settings/user-settings.service';
 import { KnownSettings } from '../user-settings/model/known-settings.enum';
+import { Emoji } from '../common/emoji';
 
 export const updateSetting = async <Setting extends KnownSettings>(
   discordUsersService: DiscordUsersService,
@@ -34,7 +35,9 @@ export const updateSetting = async <Setting extends KnownSettings>(
   }
 
   return {
-    content: `Setting \`${setting}\` updated to \`${settingRecord.value.replace(
+    content: `${
+      Emoji.CHECK_MARK_BUTTON
+    } Setting \`${setting}\` updated to \`${settingRecord.value.replace(
       /`/,
       '\\`',
     )}\` successfully`,

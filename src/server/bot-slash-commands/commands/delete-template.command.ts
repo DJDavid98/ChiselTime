@@ -8,6 +8,7 @@ import { Command, Handler } from '@discord-nestjs/core';
 import { EntityManager } from 'typeorm';
 import { DiscordUser } from '../../discord-users/entities/discord-user.entity';
 import { MessageTemplate } from '../../message-templates/entities/message-template.entity';
+import { Emoji } from '../../common/emoji';
 
 @Command({
   name: 'Delete Template',
@@ -79,7 +80,7 @@ export class DeleteTemplateCommand {
     await this.entityManager.remove(existingTemplate);
 
     await interaction.reply({
-      content: `Template \`${existingTemplateId}\` successfully deleted`,
+      content: `${Emoji.CHECK_MARK_BUTTON} Template \`${existingTemplateId}\` successfully deleted`,
       ephemeral: true,
     });
   }

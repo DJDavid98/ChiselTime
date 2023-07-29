@@ -6,6 +6,7 @@ import { serverEnv } from '../server-env';
 import { BotGateway } from './bot.gateway';
 import { BotSlashCommandsModule } from '../bot-slash-commands/bot-slash-commands.module';
 import { MessageTemplatesModule } from '../message-templates/message-templates.module';
+import { MessageUpdatesModule } from '../message-updates/message-updates.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { MessageTemplatesModule } from '../message-templates/message-templates.m
       }),
     }),
     MessageTemplatesModule,
+    MessageUpdatesModule,
     BotSlashCommandsModule,
   ],
   providers: [BotGateway],
