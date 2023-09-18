@@ -11,12 +11,15 @@ export const updateSetting = async <Setting extends KnownSettings>(
   setting: Setting,
   value: unknown,
 ) => {
-  const discordUser = await discordUsersService.findOne(userId);
+  let discordUser = await discordUsersService.findOne(userId);
   if (!discordUser) {
-    return {
-      content: 'Could not find Discord user in the database',
-      ephemeral: true,
-    };
+    discordUser = await discordUsersService.create({
+      id: userId,
+      name: 'Unknown User',
+      avatar: null,
+      displayName: null,
+      discriminator: 0,
+    });
   }
 
   let settingRecord: UserSetting;
