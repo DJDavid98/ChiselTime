@@ -5,7 +5,7 @@ export class UserSettings1689874461493 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`CREATE TABLE "user_settings" (
-      "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+      "id" uuid NOT NULL DEFAULT gen_random_uuid(),
       "setting" character varying(64) NOT NULL,
       "value" json NOT NULL,
       "userId" bigint NOT NULL,

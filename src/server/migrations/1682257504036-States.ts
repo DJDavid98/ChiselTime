@@ -5,7 +5,7 @@ export class States1682257504036 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`CREATE TABLE "states" (
-      "state" uuid NOT NULL DEFAULT uuid_generate_v4(),
+      "state" uuid NOT NULL DEFAULT gen_random_uuid(),
       "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
       CONSTRAINT "PK_3027b6249ed4ee187d27cc0638f" PRIMARY KEY ("state"))`);
   }

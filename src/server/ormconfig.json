@@ -9,6 +9,7 @@
   "entities": [
     "dist/**/*.entity.js"
   ],
+  "uuidExtension": "pgcrypto",
   "logging": true,
   "logger": "advanced-console",
   "synchronize": false,
