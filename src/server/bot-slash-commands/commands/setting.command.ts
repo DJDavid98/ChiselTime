@@ -4,6 +4,9 @@ import { Injectable } from '@nestjs/common';
 import { TimezoneSettingCommand } from './setting/timezone-setting.command';
 import { ListSettingCommand } from './setting/list-setting.command';
 import { EphemeralSettingCommand } from './setting/ephemeral-setting.command';
+import { HeaderSettingCommand } from './setting/header-setting.command';
+import { FormatSettingCommand } from './setting/format-setting.command';
+import { ColumnsSettingCommand } from './setting/columns-setting.command';
 
 @Command({
   name: 'setting',
@@ -15,6 +18,9 @@ import { EphemeralSettingCommand } from './setting/ephemeral-setting.command';
     TimezoneSettingCommand,
     ListSettingCommand,
     EphemeralSettingCommand,
+    HeaderSettingCommand,
+    FormatSettingCommand,
+    ColumnsSettingCommand,
   ],
 })
 @Injectable()

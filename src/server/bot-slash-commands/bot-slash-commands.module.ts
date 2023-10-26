@@ -12,6 +12,9 @@ import { ListSettingCommand } from './commands/setting/list-setting.command';
 import { EphemeralSettingCommand } from './commands/setting/ephemeral-setting.command';
 import { ManageTemplateCommand } from './commands/manage-template.command';
 import { MessageUpdatesModule } from '../message-updates/message-updates.module';
+import { HeaderSettingCommand } from './commands/setting/header-setting.command';
+import { FormatSettingCommand } from './commands/setting/format-setting.command';
+import { ColumnsSettingCommand } from './commands/setting/columns-setting.command';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { MessageUpdatesModule } from '../message-updates/message-updates.module'
     TimezoneSettingCommand,
     ListSettingCommand,
     EphemeralSettingCommand,
+    HeaderSettingCommand,
+    FormatSettingCommand,
+    ColumnsSettingCommand,
   ],
 })
 export class BotSlashCommandsModule {}

@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-  settingsTypeGuards,
+  settingsPrimitiveTypes,
   SettingTypes,
   UserSetting,
 } from './entities/user-setting.entity';
@@ -54,20 +54,27 @@ export class UserSettingsService {
     discordUser: DiscordUser,
     setting: Setting,
     value: unknown,
-  ): Promise<UserSetting<Setting>> {
-    if (!(setting in settingsTypeGuards)) {
+  ): Promise<UserSetting<Setting> | null> {
+    if (!(setting in settingsPrimitiveTypes)) {
       throw new Error(`Unknown setting ${setting}`);
     }
 
-    const parsedValue = settingsParser[setting](value);
-    if (!settingsTypeGuards[setting](parsedValue)) {
-      throw new Error(`Setting ${setting} value type mismatch`);
+    const parsedValue = settingsParser[setting](value, this.logger);
+    if (parsedValue !== null) {
+      const expectedType = settingsPrimitiveTypes[setting];
+      const actualType = typeof parsedValue;
+      if (expectedType !== actualType) {
+        throw new Error(
+          `Setting ${setting} value type mismatch (expected ${expectedType}, got ${actualType})`,
+        );
+      }
     }
 
     let record = await this.getSetting(discordUser, setting);
     if (record) {
       if (parsedValue === null) {
         await this.userSettingsRepository.remove(record);
+        record = null;
       } else {
         const storedValue = UserSetting.getDecodedValue(record);
         if (parsedValue !== storedValue) {
@@ -75,15 +82,12 @@ export class UserSettingsService {
           await this.userSettingsRepository.save(record);
         }
       }
-    } else {
-      debugger;
+    } else if (parsedValue !== null) {
       record = new UserSetting<Setting>();
       record.user = discordUser;
       record.setting = setting;
       record.value = JSON.stringify(parsedValue);
-      if (parsedValue !== null) {
-        await this.userSettingsRepository.save(record);
-      }
+      await this.userSettingsRepository.save(record);
     }
 
     const cacheKey = this.getSettingsCacheKey(discordUser.id);

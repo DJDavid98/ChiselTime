@@ -7,7 +7,7 @@ interface LoadingIndicatorProps {
 
 export const LoadingIndicator: FC<LoadingIndicatorProps> = ({ size = 32 }) => {
   const style = useMemo(
-    () => ({ '--size': `${size / 16}rem` } as CSSProperties),
+    () => ({ '--size': `${size / 16}rem` }) as CSSProperties,
     [size],
   );
   return (

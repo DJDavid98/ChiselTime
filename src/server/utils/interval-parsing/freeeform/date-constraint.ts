@@ -11,7 +11,7 @@ export class DateConstraint implements DateTimeConstraint {
 
   constrain(time: Temporal.ZonedDateTime): Temporal.ZonedDateTime {
     const fields: Temporal.ZonedDateTimeLike = {
-      timeZone: time.timeZone,
+      timeZone: time.timeZoneId,
       year: time.year,
       month: time.month,
       day: time.day,

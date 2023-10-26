@@ -22,7 +22,7 @@ export const updateSetting = async <Setting extends KnownSettings>(
     });
   }
 
-  let settingRecord: UserSetting;
+  let settingRecord: UserSetting | null;
   try {
     settingRecord = await userSettingsService.setSetting(
       discordUser,
@@ -37,13 +37,13 @@ export const updateSetting = async <Setting extends KnownSettings>(
     };
   }
 
+  const outcome =
+    settingRecord !== null
+      ? `updated to \`${settingRecord.value.replace(/`/, '\\`')}\``
+      : 'reset to default';
+
   return {
-    content: `${
-      Emoji.CHECK_MARK_BUTTON
-    } Setting \`${setting}\` updated to \`${settingRecord.value.replace(
-      /`/,
-      '\\`',
-    )}\` successfully`,
+    content: `${Emoji.CHECK_MARK_BUTTON} Setting \`${setting}\` has been ${outcome} successfully`,
     ephemeral: true,
   };
 };
