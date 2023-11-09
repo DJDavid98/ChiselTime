@@ -14,6 +14,7 @@ import { fallbackTimezone } from '../../common/time';
 import { Emoji } from '../../common/emoji';
 import { ensureDiscordUser, resolveUserTimezone } from '../utils/permissions';
 import { UserFacingError } from '../utils/user-facing-error.class';
+import { serverEnv } from '../../server-env';
 
 @Command({
   name: 'Create Template',
@@ -58,6 +59,13 @@ export class CreateTemplateCommand {
         discordUserIds: [discordUser.id],
       });
       const localUser = await discordUser.user;
+      if (!localUser) {
+        await interaction.reply({
+          content: `You don't have your account linked on [the website](${serverEnv.PUBLIC_HOST}), this functionality is not available until you do so.`,
+          ephemeral: true,
+        });
+        return;
+      }
       const maxTemplateCount = localUser.getMaxTemplateCount();
       if (userTemplates.length >= maxTemplateCount) {
         await interaction.reply({

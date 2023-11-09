@@ -12,13 +12,7 @@ const UserAvatarComponent: FC<{ userData: UserInfoDto }> = ({ userData }) => {
         return discordAvatar.avatarUrl;
       }
     }
-    if (userData.patreonUsers.length > 0) {
-      const patreonAvatar = userData.patreonUsers.find((pu) => pu.avatarUrl);
-      if (patreonAvatar) {
-        return patreonAvatar.avatarUrl;
-      }
-    }
-  }, [userData.discordUsers, userData.patreonUsers]);
+  }, [userData.discordUsers]);
 
   const { src, loading } = usePreloadedImage(avatarUrl);
 

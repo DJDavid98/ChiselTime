@@ -8,7 +8,6 @@ import { MessageUpdatesModule } from './message-updates/message-updates.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { DiscordUsersModule } from './discord-users/discord-users.module';
-import { PatreonUsersModule } from './patreon-users/patreon-users.module';
 import { MessageTemplatesModule } from './message-templates/message-templates.module';
 import { DiscordRestModule } from './discord-rest/discord-rest.module';
 import { UserSettingsModule } from './user-settings/user-settings.module';
@@ -20,7 +19,6 @@ import { UserSettingsModule } from './user-settings/user-settings.module';
     DiscordUsersModule,
     MessageTemplatesModule,
     MessageUpdatesModule,
-    PatreonUsersModule,
     SharedModule,
     StateModule,
     UsersModule,

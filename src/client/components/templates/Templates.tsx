@@ -31,11 +31,8 @@ export const Templates: FC<TemplatesProps> = ({ userId, maxCount }) => {
         templates.
         <br />
         <br />
-        The maximum number of templates you can have at a time is controlled by
-        your Patreon support level.
-        <br />
-        Higher tiers enable you to create more templates as well as access
-        additional update frequency options.
+        The maximum number of templates you can have at a time is currently
+        limited to 1 for each account.
       </p>
       {templateData.error ? (
         <p className={styles.error}>

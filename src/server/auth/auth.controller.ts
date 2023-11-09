@@ -24,13 +24,6 @@ export class AuthController {
     // Because this uses the AuthGuard we do not need to manually redirect to the authorization URL
   }
 
-  @Get('login/patreon')
-  @UseGuards(AuthGuard('patreon'))
-  @Redirect('/', HttpStatus.TEMPORARY_REDIRECT)
-  loginWithPatreon() {
-    // Because this uses the AuthGuard we do not need to manually redirect to the authorization URL
-  }
-
   @Get('discord')
   @UseGuards(AuthGuard('discord'))
   async getUserFromDiscordLogin(@Req() req: Request, @Res() res: Response) {
@@ -51,13 +44,6 @@ export class AuthController {
   @UseGuards(AuthGuard('discord-bot'))
   async addBot(@Req() req: Request, @Res() res: Response) {
     res.status(HttpStatus.TEMPORARY_REDIRECT).redirect('/');
-  }
-
-  @Get('patreon')
-  @UseGuards(AuthGuard('patreon'))
-  @Redirect('/', HttpStatus.TEMPORARY_REDIRECT)
-  async getUserFromPatreonLogin() {
-    // Because this uses the AuthGuard we do not need to manually redirect to the authorization URL
   }
 
   @Post('logout')

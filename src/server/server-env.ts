@@ -33,8 +33,6 @@ const {
   DISCORD_INVITE_URL,
   DISCORD_TEST_GUILD_ID,
   DISCORD_BOT_ENABLED,
-  PATREON_CLIENT_ID,
-  PATREON_CLIENT_SECRET,
   npm_lifecycle_script,
 } = process.env;
 
@@ -69,8 +67,6 @@ export const serverEnv = (() => {
     DISCORD_BOT_ENABLED: bool(DISCORD_BOT_ENABLED),
     DISCORD_INVITE_URL,
     DISCORD_TEST_GUILD_ID: DISCORD_TEST_GUILD_ID || '',
-    PATREON_CLIENT_ID,
-    PATREON_CLIENT_SECRET,
   };
 
   type Values = typeof values;

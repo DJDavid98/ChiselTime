@@ -1,5 +1,5 @@
 import { AuthService } from '../auth/auth.service';
-import { Logger } from '@nestjs/common';
+import { Logger, UnauthorizedException } from '@nestjs/common';
 import { serverEnv } from '../server-env';
 import { StateService } from '../state/state.service';
 import { StrategyOptions } from 'passport-oauth2';
@@ -32,8 +32,10 @@ export const discordUserValidatorFactory =
     let discordUser = await authService.findUserFromDiscordId(discordUserId);
     const tokens = { accessToken, refreshToken };
     if (!discordUser) {
+      logger.debug(`Discord user with ID ${discordUserId} not found, saving…`);
       discordUser = await authService.saveDiscordUserInfo(userInfo, tokens);
     } else {
+      logger.debug(`Found Discord user with ID ${discordUserId}, updating…`);
       discordUser = await authService.updateDiscordUserInfo(
         userInfo,
         discordUser,
@@ -42,8 +44,14 @@ export const discordUserValidatorFactory =
     }
 
     const localUser = await discordUser.user;
+    if (!localUser) {
+      throw new UnauthorizedException(
+        `No local user exists for Discord user ${discordUserId}`,
+      );
+    }
+
     logger.debug(
-      `Discord user with ID ${discordUserId} validated, local user ID: ${localUser.id}`,
+      `Discord user with ID ${discordUserId} validated, local user ID: ${localUser?.id}`,
     );
 
     return localUser;

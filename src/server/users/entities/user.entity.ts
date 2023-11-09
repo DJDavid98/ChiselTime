@@ -33,7 +33,7 @@ export class User {
   discordUsers: DiscordUser[];
 
   getMaxTemplateCount(): number {
-    // TODO Provide this based on Patreon subscription tier
+    // TODO Provide this based on support level
     return 1;
   }
 }

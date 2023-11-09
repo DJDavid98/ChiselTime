@@ -4,12 +4,10 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import type { User } from '../../users/entities/user.entity';
-import type { PatreonUser } from '../../patreon-users/entities/patreon-user.entity';
 import { MessageTemplate } from '../../message-templates/entities/message-template.entity';
 import { UserSetting } from '../../user-settings/entities/user-setting.entity';
 
@@ -22,14 +20,7 @@ export class DiscordUser {
   id: string;
 
   @ManyToOne('User', (user: User) => user.discordUsers)
-  user: Promise<User>;
-
-  @OneToOne(
-    'PatreonUser',
-    (patreonUser: PatreonUser) => patreonUser.discordUser,
-    { eager: true },
-  )
-  patreonUser?: PatreonUser;
+  user: Promise<User | undefined>;
 
   @Column('character varying', { length: 32 })
   name: string;

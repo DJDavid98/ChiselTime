@@ -16,21 +16,8 @@ export const UserInfo: FC = () => {
   const result = useUserInfo();
 
   const tierData: TierData = useMemo(() => {
-    if (
-      result.data &&
-      result.data.patreonUsers &&
-      result.data.patreonUsers.length > 0
-    ) {
-      // TODO Check tiers and return appropriate level
-      return {
-        // className: styles.supporter,
-        label: 'Free',
-        supportLevel: 0,
-      };
-    }
-
     return { label: 'Free' };
-  }, [result.data]);
+  }, []);
 
   return (
     <div className={styles.info}>
@@ -45,12 +32,6 @@ export const UserInfo: FC = () => {
           >
             {tierData.label}
           </span>
-          {typeof tierData.supportLevel === 'undefined' && (
-            <>
-              <span className={styles.divider} />
-              <a href="/auth/login/patreon">Link Patreon account</a>
-            </>
-          )}
           <span className={styles.divider} />
           <form action="/auth/logout" method="POST" className={styles.logout}>
             <button>Logout</button>

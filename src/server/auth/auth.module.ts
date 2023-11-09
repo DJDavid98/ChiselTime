@@ -7,8 +7,6 @@ import { HttpModule } from '@nestjs/axios';
 import { DiscordUsersModule } from '../discord-users/discord-users.module';
 import { DiscordStrategy } from './strategies/discord.strategy';
 import { StateModule } from '../state/state.module';
-import { PatreonUsersModule } from '../patreon-users/patreon-users.module';
-import { PatreonStrategy } from './strategies/patreon.strategy';
 import { DiscordRestModule } from '../discord-rest/discord-rest.module';
 import { SessionUserGuard } from './guards/session-user.guard';
 import { DiscordBotStrategy } from './strategies/discord-bot.strategy';
@@ -17,7 +15,6 @@ import { DiscordBotStrategy } from './strategies/discord-bot.strategy';
   imports: [
     UsersModule,
     DiscordUsersModule,
-    PatreonUsersModule,
     PassportModule.register({}),
     HttpModule,
     StateModule,
@@ -28,7 +25,6 @@ import { DiscordBotStrategy } from './strategies/discord-bot.strategy';
     AuthService,
     DiscordStrategy,
     DiscordBotStrategy,
-    PatreonStrategy,
     SessionUserGuard,
   ],
 })
