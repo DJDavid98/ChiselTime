@@ -39,7 +39,10 @@ export const updateSetting = async <Setting extends KnownSettings>(
 
   const outcome =
     settingRecord !== null
-      ? `updated to \`${settingRecord.value.replace(/`/, '\\`')}\``
+      ? `updated to \`${JSON.stringify(settingRecord.value).replace(
+          /`/,
+          '\\`',
+        )}\``
       : 'reset to default';
 
   return {

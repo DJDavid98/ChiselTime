@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import type { DiscordUser } from '../../discord-users/entities/discord-user.entity';
 import { KnownSettings } from '../model/known-settings.enum';
 import { ColumnOptions } from '../model/column-options.enum';
@@ -35,6 +35,7 @@ export class UserSetting<Setting extends string = string> {
     onUpdate: 'CASCADE',
     nullable: false,
   })
+  @JoinColumn({ name: 'discord_user_id' })
   user: Promise<DiscordUser> | DiscordUser;
 
   @Column('character varying', {
@@ -44,14 +45,13 @@ export class UserSetting<Setting extends string = string> {
   setting: Setting;
 
   @Column('json', { nullable: false })
-  value: string;
+  value: unknown;
 
   static getDecodedValue<
     Setting extends keyof typeof settingsPrimitiveTypes & string,
   >(setting: UserSetting<Setting>): SettingTypes[Setting] | null {
-    const parsedValue = JSON.parse(setting.value);
-    if (typeof parsedValue === settingsPrimitiveTypes[setting.setting]) {
-      return parsedValue as never;
+    if (typeof setting.value === settingsPrimitiveTypes[setting.setting]) {
+      return setting.value as never;
     }
 
     return null;

@@ -17,10 +17,15 @@ export class User {
   @Column('character varying', { length: USER_NAME_MAX_LENGTH })
   name: string;
 
-  @CreateDateColumn({ type: 'timestamptz', default: () => 'now()' })
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamptz',
+    default: () => 'now()',
+  })
   createdAt: Date;
 
   @UpdateDateColumn({
+    name: 'updated_at',
     type: 'timestamptz',
     default: () => 'now()',
     onUpdate: 'now()',

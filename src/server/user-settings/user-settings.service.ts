@@ -78,7 +78,7 @@ export class UserSettingsService {
       } else {
         const storedValue = UserSetting.getDecodedValue(record);
         if (parsedValue !== storedValue) {
-          record.value = JSON.stringify(parsedValue);
+          record.value = parsedValue;
           await this.userSettingsRepository.save(record);
         }
       }
@@ -86,7 +86,7 @@ export class UserSettingsService {
       record = new UserSetting<Setting>();
       record.user = discordUser;
       record.setting = setting;
-      record.value = JSON.stringify(parsedValue);
+      record.value = parsedValue;
       await this.userSettingsRepository.save(record);
     }
 

@@ -2,6 +2,9 @@
 
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
+/**
+ * This migration removes Patreon integrations from the database
+ */
 export class MigrationName1699563297914 implements MigrationInterface {
   name = 'MigrationName1699563297914';
 
