@@ -1,4 +1,12 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import type { DiscordUser } from '../../discord-users/entities/discord-user.entity';
 import { KnownSettings } from '../model/known-settings.enum';
 import { ColumnOptions } from '../model/column-options.enum';
@@ -46,6 +54,21 @@ export class UserSetting<Setting extends string = string> {
 
   @Column('json', { nullable: false })
   value: unknown;
+
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamptz',
+    default: () => 'now()',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamptz',
+    default: () => 'now()',
+    onUpdate: 'now()',
+  })
+  updatedAt: Date;
 
   static getDecodedValue<
     Setting extends keyof typeof settingsPrimitiveTypes & string,
